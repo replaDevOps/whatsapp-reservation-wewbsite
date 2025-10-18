@@ -1,0 +1,6 @@
+export * from './HomePage'
+export * from './TermsPage'
+export * from './PrivacyPage'
+export * from './Login'
+export * from './BookDemo'
+export * from './Signup'
