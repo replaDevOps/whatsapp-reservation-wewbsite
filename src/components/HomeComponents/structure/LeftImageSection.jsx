@@ -10,7 +10,7 @@ const LeftImageSection = ({subtitle,title, desc,imageUrl}) => {
         <Row gutter={[24,24]}>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Flex justify={i18n.language === 'ar' ? 'eight' : 'left'}>
-                <Image src={imageUrl} preview={false} width={400}/>
+                <Image src={imageUrl} preview={false} width={400} fetchPriority="high" alt='image'/>
             </Flex>
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>

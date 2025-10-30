@@ -41,7 +41,8 @@ const MobileNavbar = ({ visible, onClose }) => {
                     <img
                         src="https://flagcdn.com/w20/us.png"
                         alt="English"
-                        style={{ width: 20, marginRight: 8 }}
+                        className='w-20 mx-8'
+                        fetchPriority="high"
                     />
                     English
                 </span>
@@ -62,7 +63,8 @@ const MobileNavbar = ({ visible, onClose }) => {
                     <img
                         src="https://flagcdn.com/w20/sa.png"
                         alt="Arabic"
-                        style={{ width: 20, marginRight: 8 }}
+                        className='w-20 mx-8'
+                        fetchPriority="high"
                     />
                     Arabic
                 </span>
@@ -81,7 +83,7 @@ const MobileNavbar = ({ visible, onClose }) => {
             >
                 <Flex justify='space-between' align='center'>
                     <NavLink to={'/'} onClick={onClose}>
-                        <Image src='/assets/images/logo.png' width={60} preview={false} />
+                        <Image src='/assets/images/logo.webp' alt='logo whatsapp reservation' fetchPriority="high" width={60} preview={false} />
                     </NavLink>
                     <Button className='bg-transparent border-0 p-0' onClick={onClose}>
                         <CloseOutlined className='text-black fs-18' />
@@ -100,7 +102,7 @@ const MobileNavbar = ({ visible, onClose }) => {
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={'/'}>
+                            <NavLink to={'/price'}>
                                 <Text className="nav-item">Price</Text>
                             </NavLink>
                         </li>
@@ -118,7 +120,7 @@ const MobileNavbar = ({ visible, onClose }) => {
                     <Flex vertical gap={10} align='center' justify='center' className='mt-3'>
                         <Dropdown menu={{ items }} trigger={['click']}>
                             <Button className="btn w-100">
-                                <img src={selected.flag} alt={selected.label} style={{ width: 20 }} />
+                                <img src={selected.flag} alt={selected.label} className='w-20' fetchPriority="high" />
                                 <span>{selected.label}</span>
                                 <DownOutlined className='pl-2' />
                             </Button>

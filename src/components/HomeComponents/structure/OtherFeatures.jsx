@@ -41,7 +41,7 @@ const OtherFeatures = () => {
     <div className='common-padding'>
       <div className="container">
         <Row gutter={[24,90]} justify={'center'}>
-            <Col xs={24} sm={24} md={12} lg={12}>
+            <Col xs={24} sm={24} md={12} lg={10}>
             <Flex vertical gap={20} align='center' justify='center'>
                 <Text className='custom-text'>{t('Other Features')}</Text>
                 <Title className='m-0 fw-600'>{t('There’s More to Explore')}</Title>
@@ -55,7 +55,7 @@ const OtherFeatures = () => {
             <Card
               className='h-100 p-0'
             >
-              <Image src={item?.image} preview={false} className='w-100' style={{height:'300px'}}/>
+              <Image src={item?.image} preview={false} className='w-100 h-300' fetchPriority="high" alt='image'/>
               <Meta title={t(item.title)} description={t(item.desc)} className='mt-1' />
             </Card>
           </Col>

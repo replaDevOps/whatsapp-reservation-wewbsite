@@ -1,12 +1,29 @@
-import React from 'react'
+import { useEffect } from 'react'
 import { CustomerReviews, Faqs, HeroSection, LeftImageSection, OtherFeatures, OurFeatures, OurPricing, RightImageSection } from '../components'
 import { useTranslation } from 'react-i18next'
-const HomePage = () => {
+import { useLocation } from 'react-router-dom'
+
+const HomePage = ({featuresRef, faqsRef,reviewsRef}) => {
   const { t } = useTranslation()
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.scrollTo === 'features') {
+      featuresRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    if (location.state?.scrollTo === 'faqs') {
+      faqsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    if (location.state?.scrollTo === 'reviews') {
+      reviewsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [location]);
+
   return (
     <>
       <HeroSection />
-      <OurFeatures />
+      <div ref={featuresRef}>
+        <OurFeatures />
+      </div>
       <RightImageSection
         subtitle={t('Messaging')}
         title={t('WhatsApp Interactive Booking')}
@@ -32,9 +49,17 @@ const HomePage = () => {
          imageUrl={'/assets/images/autoamted-whatsapp-bot.png'}
       />
       <OtherFeatures />
-      <OurPricing />
-      <Faqs />
-      <CustomerReviews />
+      <div className="common-padding bg-skyblue">
+        <div className="container">
+          <OurPricing />
+        </div>
+      </div>
+      <div ref={faqsRef}>
+        <Faqs />
+      </div>
+      <div ref={reviewsRef}>
+        <CustomerReviews />
+      </div>
     </>
   )
 }

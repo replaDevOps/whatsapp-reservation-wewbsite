@@ -17,7 +17,7 @@ const HeroSection = () => {
             <Text className='fs-16'>{t('Manage bookings, reduce no-shows, and engage clients — all from one powerful platform integrated with WhatsApp.')}</Text>
             <Button className='btn bg-brand text-white' onClick={()=>navigate('/bookdemo')}>{t('Book A Demo')}</Button>
           </Flex>
-          <Image src='/assets/images/hero-image.png' preview={false}/>
+          <Image src='/assets/images/hero-image.png' fetchPriority="high" alt='banner image' preview={false}/>
         </Flex>
       </div>
     </section>

@@ -19,7 +19,7 @@ const RightImageSection = ({subtitle,title, desc,imageUrl}) => {
             </Col>
             <Col xs={24} sm={24} md={12} lg={12} xl={12}>
             <Flex justify={i18n.language === 'ar' ? 'left' : 'right'}>
-                <Image src={imageUrl} preview={false} width={400}/>
+                <Image src={imageUrl} preview={false} width={400} fetchPriority="high" alt='image'/>
             </Flex>
             </Col>
         </Row>

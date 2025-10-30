@@ -1,6 +1,8 @@
 import {Form, Select, Typography} from 'antd';
 import './index.css'
+import { useTranslation } from 'react-i18next';
 export const MySelect = ({withoutForm,name,label,mode,disabled,required,message,value,options, ...props}) => {
+  const { t } = useTranslation();
   return (
     withoutForm?
       <Select 
@@ -12,7 +14,7 @@ export const MySelect = ({withoutForm,name,label,mode,disabled,required,message,
         {...props}
       >
           {
-              options?.map(opt=><Select.Option value={opt?.id} key={opt?.id}>{opt?.name}</Select.Option>)
+              options?.map(opt=><Select.Option value={opt?.id} key={opt?.id}>{t(opt?.name)}</Select.Option>)
           }
           
       </Select>
@@ -36,7 +38,7 @@ export const MySelect = ({withoutForm,name,label,mode,disabled,required,message,
                 {...props}
                 >
                   {
-                      options?.map(opt=><Select.Option value={opt?.name} key={opt?.id}>{opt?.name}</Select.Option>)
+                      options?.map(opt=><Select.Option value={opt?.name} key={opt?.id}>{t(opt?.name)}</Select.Option>)
                   }
               </Select>
       </Form.Item>  

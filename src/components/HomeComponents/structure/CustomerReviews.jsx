@@ -6,57 +6,39 @@ import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useTranslation } from 'react-i18next';
+import { reviewsData } from '../../../data';
 const { Text, Title } = Typography;
 const CustomerReviews = () => {
     const carouselRef = useRef();
     const {t} = useTranslation()
-    const data = [
-        {
-            key: '1',
-            title: 'Super Easy & Clean!',
-            desc: 'This platform helped me launch my website in just a few hours. The UI is clean, responsive, and super easy to customize. Highly recommended!',
-            username: 'Ayesha R.'
-        },
-        {
-            key: '2',
-            title: 'Super Easy & Clean!',
-            desc: 'This platform helped me launch my website in just a few hours. The UI is clean, responsive, and super easy to customize. Highly recommended!',
-            username: 'Ayesha R.'
-        },
-        {
-            key: '3',
-            title: 'Super Easy & Clean!',
-            desc: 'This platform helped me launch my website in just a few hours. The UI is clean, responsive, and super easy to customize. Highly recommended!',
-            username: 'Ayesha R.'
-        },
-        {
-            key: '4',
-            title: 'Super Easy & Clean!',
-            desc: 'This platform helped me launch my website in just a few hours. The UI is clean, responsive, and super easy to customize. Highly recommended!',
-            username: 'Ayesha R.'
-        },
-    ]
+    
     return (
         <div className='common-padding bg-skyblue'>
             <div className='container'>
                 <Row gutter={[12, 12]}>
                     <Col xs={24} sm={24} md={24} lg={8} xl={8}>
-                        <Flex vertical gap={10}>
-                            <Text className='custom-text'>{t('Customer Reviews')}</Text>
-                            <Title className='m-0 fw-600' level={2}>{t('What Our Users Say')}</Title>
-                            <Text className='fs-16'>
-                                {t('Real feedback from clients showing how we simplify bookings and boost growth.')}
-                            </Text>
-                            <Flex justify='end'>
+                        <Flex vertical gap={35}>
+                            <Flex vertical gap={15}>
+                                <Text className='custom-text'>{t('Customer Reviews')}</Text>
+                                <Title className='m-0 fw-600' level={2}>{t('What Our Users Say')}</Title>
+                                <Text className='fs-16'>
+                                    {t('Real feedback from clients showing how we simplify bookings and boost growth.')}
+                                </Text>
+                            </Flex>
+                            <Flex justify='end' className='mt-1'>
                                 <Flex gap={5}>
                                     <Button
-                                        icon={<LeftOutlined />}
+                                        className='bg-transparent border-0 p-0'
                                         onClick={() => carouselRef.current.prev()}
-                                    />
+                                    >
+                                        <img src='/assets/icons/prev.webp' alt='prev icon' width={40} fetchPriority="high" />
+                                    </Button>
                                     <Button
-                                        icon={<RightOutlined />}
+                                        className='bg-transparent border-0 p-0'
                                         onClick={() => carouselRef.current.next()}
-                                    />
+                                    >
+                                        <img src='/assets/icons/next.webp' alt='prev icon' width={40} fetchPriority="high" />
+                                    </Button>
                                 </Flex>
                             </Flex>
                         </Flex>
@@ -86,22 +68,22 @@ const CustomerReviews = () => {
                             ref={carouselRef}
                         >
                             {
-                                data?.map((item, index) => (
-                                    <div key={index} style={{ padding: "0 12px" }}> {/* Gap yaha set hoga */}
-                                        <Card style={{marginRight:'10px'}}>
-                                            <Flex vertical gap={8}>
-                                                <Flex vertical gap={10}>
-                                                    <Title level={4} className='fw-normal'>
+                                reviewsData?.map((item, index) => (
+                                    <div key={index} className='p-0-12'> {/* Gap yaha set hoga */}
+                                        <Card className='mr-10'>
+                                            <Flex vertical gap={40}>
+                                                <Flex vertical gap={5}>
+                                                    <Title level={4} className='fw-normal m-0'>
                                                         {t(item?.title)}
                                                     </Title>
                                                     <Text className='fs-14'>{t(item?.desc)}</Text>
+                                                </Flex>
+                                                <Flex vertical gap={8}>
                                                     <Text strong>{t(item?.username)}</Text>
                                                     <Flex gap={5}>
-                                                        <Image src='/assets/icons/star.png' width={20} preview={false}/>
-                                                        <Image src='/assets/icons/star.png' width={20} preview={false}/>
-                                                        <Image src='/assets/icons/star.png' width={20} preview={false}/>
-                                                        <Image src='/assets/icons/star.png' width={20} preview={false}/>
-                                                        <Image src='/assets/icons/star.png' width={20} preview={false}/>
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <Image key={i} src="/assets/icons/star.png" width={20} preview={false} fetchPriority="high" alt='star icon' />
+                                                        ))}
                                                     </Flex>
                                                 </Flex>
                                             </Flex>

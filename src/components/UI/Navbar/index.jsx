@@ -1,15 +1,16 @@
-import React, { useState, useEffect } from "react";
-import { Dropdown, Button, Drawer, Space, Flex, Typography } from "antd";
-import { MenuOutlined, DownOutlined } from "@ant-design/icons";
+import { useState, useEffect } from "react";
+import { Dropdown, Button, Flex, Typography } from "antd";
+import { DownOutlined } from "@ant-design/icons";
 import './index.css'
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { MobileNavbar } from "./MobileNavbar";
-import { CheckoutModal } from "../modals/CheckoutModal";
 import { actionsApi } from "../../../shared";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-const { Text, Title } = Typography;
-const Navbar = () => {
+import { CheckoutModal } from "../modals";
+const { Text } = Typography;
+
+const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
     const [visible, setVisible] = useState(false)
     const [isFixed, setIsFixed] = useState(false);
     const [checkoutvisible, setCheckoutVisible] = useState(false);
@@ -23,21 +24,21 @@ const Navbar = () => {
         flag: "https://flagcdn.com/w20/us.png",
     });
      useEffect(()=>{
-    let lang= localStorage.getItem("lang")
-    setLanguage(lang  || 'ar')
-    i18n.changeLanguage(lang  || 'ar')
-    dispatch(actionsApi?.changeLanguage(lang  || 'ar'))
-    document.body.dir = i18n.dir();
-  }, []) 
+        let lang= localStorage.getItem("lang")
+        setLanguage(lang  || 'ar')
+        i18n.changeLanguage(lang  || 'ar')
+        dispatch(actionsApi?.changeLanguage(lang  || 'ar'))
+        document.body.dir = i18n.dir();
+    }, []) 
 
-  const handleChnage= (value)=>{
-    setLanguage(value)
-    localStorage.setItem("lang", value)
-    i18n?.changeLanguage(value)
-    // window.location.href='/'
-    document.body.dir = i18n.dir(value);
-    dispatch(actionsApi?.changeLanguage(value))
-  }
+    const handleChnage= (value)=>{
+        setLanguage(value)
+        localStorage.setItem("lang", value)
+        i18n?.changeLanguage(value)
+        // window.location.href='/'
+        document.body.dir = i18n.dir(value);
+        dispatch(actionsApi?.changeLanguage(value))
+    }
 
     const items = [
         {
@@ -55,7 +56,8 @@ const Navbar = () => {
                     <img
                         src="https://flagcdn.com/w20/us.png"
                         alt="English"
-                        style={{ width: 20, marginRight: 8 }}
+                        className="w-20 mx-8"
+                        fetchPriority="high"
                     />
                     English
                 </span>
@@ -77,7 +79,8 @@ const Navbar = () => {
                     <img
                         src="https://flagcdn.com/w20/sa.png"
                         alt="Arabic"
-                        style={{ width: 20, marginRight: 8 }}
+                        className="w-20 mx-8"
+                        fetchPriority="high"
                     />
                     Arabic
                 </span>
@@ -97,6 +100,31 @@ const Navbar = () => {
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+
+    const handleScrollOrNavigate = (section) => {
+        if (location.pathname === '/') {
+            switch (section) {
+            case 'features':
+                scrollToFeatures();
+                break;
+            case 'faqs':
+                scrollToFaqs();
+                break;
+            case 'reviews':
+                scrollToReviews();
+                break;
+            case 'home':
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+                break;
+            }
+        } 
+        else {
+            navigate('/', { state: { scrollTo: section } });
+        }
+    };
+
+
     return (
         <>
             <div className={`navbar-container ${isFixed ? "navbar-fixed" : ""}`} id="navbar">
@@ -104,7 +132,7 @@ const Navbar = () => {
                     <div className="navbar-sm-inner">
                         <Link>
                             <div className="navbar-logo">
-                                <img src="/assets/images/logo.png" />
+                                <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" />
                             </div>
                         </Link>
                         <div className="sp-cover" onClick={() => setVisible(true)}>
@@ -119,7 +147,7 @@ const Navbar = () => {
                         <Flex gap={20} align="center">
                             <Link>
                                 <div className="navbar-logo">
-                                    <img src="/assets/images/logo.png" />
+                                    <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" />
                                 </div>
                             </Link>
                             <ul className="nav-list">
@@ -129,22 +157,22 @@ const Navbar = () => {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to={'/'}>
+                                    <NavLink onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('features'); }}>
                                         <Text className="nav-item">{t('Features')}</Text>
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to={'/'}>
+                                    <NavLink to={'/price'}>
                                         <Text className="nav-item">{t('Price')}</Text>
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to={'/'}>
+                                    <NavLink onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('faqs'); }}>
                                         <Text className="nav-item">{t('FAQs')}</Text>
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to={'/'}>
+                                    <NavLink onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('reviews'); }}>
                                         <Text className="nav-item">{t('Reviews')}</Text>
                                     </NavLink>
                                 </li>
@@ -154,7 +182,7 @@ const Navbar = () => {
                             <Flex gap={5}>
                                 <Dropdown menu={{ items }} trigger={['click']}>
                                     <Button className="btn">
-                                        <img src={selected.flag} alt={selected.label} style={{ width: 20 }} />
+                                        <img src={selected.flag} alt={selected.label} fetchPriority="high" className="w-20" />
                                         <span>{selected.label}</span>
                                         <DownOutlined />
                                     </Button>

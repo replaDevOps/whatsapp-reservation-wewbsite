@@ -1,15 +1,26 @@
 import { useState } from 'react';
 import { CloseOutlined } from '@ant-design/icons'
-import { Modal, Typography, Button, Flex, Card, Form, Col, Row, Select, Image } from 'antd'
-import { MyDatepicker, MyInput } from '../../../components';
+import { Modal, Typography, Button, Flex, Card, Form, Col, Row, Image, Radio } from 'antd'
+import { ConfirmationModal, MyDatepicker, MyInput } from '../../../components';
 import { NavLink } from 'react-router-dom';
 import { ChangePlanModal } from './ChangePlanModal';
 import { useTranslation } from 'react-i18next';
+import { creditData } from '../../../data';
+
 const { Title, Text } = Typography
-const CheckoutModal = ({visible,onClose,}) => {
+const CheckoutModal = ({visible,onClose,setCheckoutVisible}) => {
     const [form] = Form.useForm();
     const [change, setChange] = useState(false)
     const {t} = useTranslation();
+    const [selectedPlan, setSelectedPlan] = useState(creditData[0]);
+    const [confirm, setConfirm] = useState(false);
+    
+    const handleChange = (e) => {
+        const selectedkey = e.target.value;
+        const planobj = creditData?.find((item) => item?.id === selectedkey)
+        setSelectedPlan(planobj)
+    }
+
     return (
         <>
            <Modal 
@@ -59,9 +70,9 @@ const CheckoutModal = ({visible,onClose,}) => {
                                     <Flex vertical gap={5}>
                                         <Title level={2} className='m-0'>
                                             <sup className='fs-12'>{t('SAR')}</sup> 
-                                            {t('200')}<sub className='fs-12 subtitle-color'>/mo</sub>
+                                            {t('200')}<sub className='fs-12 subtitle-color'>/{t('Monthly')?.toLowerCase()}</sub>
                                         </Title>
-                                        <Button className='btn bg-brand text-white' onClick={()=>{setChange(true); onClose();}}>
+                                        <Button className='btn bg-brand text-white' onClick={()=>{setChange(true); setCheckoutVisible(false)}}>
                                            {t('Change Plan')}
                                         </Button>
                                     </Flex>
@@ -77,73 +88,47 @@ const CheckoutModal = ({visible,onClose,}) => {
                         <Flex vertical gap={10}>
                             <Card className='shadow'>
                                 <Flex vertical gap={0}>
-                                    <Text className='fs-14 fw-600'>
-                                        {t('Customer Information')}
-                                    </Text>
-                                    <Text className='fs-13 subtitle-color'>
-                                        {t('Please provide your details to complete the subscription.')}
-                                    </Text>
-                                </Flex>
-                                <Row gutter={16} className='mt-1'>
-                                    <Col md={{span: 12}} span={24}>
-                                        <MyInput
-                                            label={t('First Name')}
-                                            name='firstName'
-                                            required
-                                            message={'Please Enter First Name'}
-                                            placeholder={t('Enter First Name')}
-                                        />
-                                    </Col>
-                                    <Col md={{span: 12}} span={24}>
-                                        <MyInput
-                                            label={t('Last Name')}
-                                            name='lastName'
-                                            required
-                                            message={t('Please Enter Last Name')}
-                                            placeholder={t('Enter Last Name')}
-                                        />
-                                    </Col>
-                                    <Col md={{span: 12}} span={24}>
-                                        <MyInput
-                                            name="phoneNo"
-                                            label={t('Phone Number')}
-                                            required
-                                            message={t('Please enter a valid phone number')}
-                                            addonBefore={
-                                                <Select
-                                                    defaultValue="+966"
-                                                    style={{ width: 80 }}
-                                                    onChange={(value) => form.setFieldsValue({ countryCode: value })}
-                                                >
-                                                    <Select.Option value="sa">+966</Select.Option>
-                                                    <Select.Option value="ae">+954</Select.Option>
-                                                </Select>
-                                            }
-                                            placeholder="3445592382"
-                                            value={form.getFieldValue("phoneNo") || ""}
-                                        />
-                                    </Col>
-                                    <Col md={{span: 12}} span={24}>
-                                        <MyInput
-                                            label={t('Email Address')}
-                                            name='email'
-                                            required
-                                            message={t('Please Enter Email Address')}
-                                            placeholder={t('Enter Email Address')}
-                                        />
-                                    </Col>
-                                </Row>
-                            </Card>
-                            <Card className='shadow'>
-                                <Flex vertical gap={0}>
-                                    <Text className='fs-14 fw-600'>
+                                    <Title level={5} className='fw-600 m-0'>
                                         {t('Select Payment Method')}
-                                    </Text>
+                                    </Title>
                                     <Text className='fs-13 subtitle-color'>
                                         {t('Select a secure payment option to continue.')}
                                     </Text>
                                 </Flex>
-                                <Row gutter={16} className='mt-1' justify={'center'}>
+                                <Radio.Group
+                                    value={selectedPlan?.id}
+                                    onChange={handleChange}
+                                    className='w-100 mt-2'
+                                >
+                                    {creditData?.map((packages, index) => (
+                                        <Card className={`shadow mb-2 card-cs cursor ${selectedPlan?.id === packages.id ? 'border-brand' : ''}`} key={index}
+                                            onClick={() =>
+                                                handleChange({ target: { value: packages.id } })
+                                            }
+                                        >
+                                            <Flex justify="space-between" gap={5}>
+                                                <Radio value={packages.id}>
+                                                    {t(packages?.title)}
+                                                </Radio>
+                                                <Flex>
+                                                    {
+                                                        Array.isArray(packages?.cards) ?
+                                                        <Flex gap={5} align="center" wrap>
+                                                            {
+                                                                packages?.cards?.map((list,i)=>
+                                                                    <Image src={list} preview={false} width={35} key={i} alt='cards icon' fetchPriority="high" />
+                                                                )
+                                                            }
+                                                        </Flex>
+                                                        :
+                                                        <Image src={packages?.cards} preview={false} width={35} alt='cards icon' fetchPriority="high" />
+                                                    }
+                                                </Flex>
+                                            </Flex>
+                                        </Card>
+                                    ))}
+                                </Radio.Group>
+                                <Row gutter={16} justify={'center'}>
                                     <Col span={24}>
                                         <MyInput
                                             label={t('Cardholder Name')}
@@ -190,7 +175,11 @@ const CheckoutModal = ({visible,onClose,}) => {
                                             </Button>
                                             <Button
                                                 className='btn bg-brand text-white'
-                                                block
+                                                block                                
+                                                onClick={() => {
+                                                    setConfirm(true);
+                                                    onClose();
+                                                }}
                                             >
                                                 {t('Complete Payment')}
                                             </Button>
@@ -199,7 +188,7 @@ const CheckoutModal = ({visible,onClose,}) => {
                                     <Col span={24}>
                                         <Flex justify='center'>
                                             <Flex className='pill-square mt-2' gap={8} align='center' justify='center'>
-                                                <img src="/assets/icons/shield.png" width={16} alt="" />
+                                                <img src="/assets/icons/shield.png" width={16} alt="shield icon" fetchPriority="high" />
                                                 <Text className='fs-12 text-sky'>
                                                     {t('Your payment method is secured with end-to-end encryption')}
                                                 </Text>
@@ -219,7 +208,12 @@ const CheckoutModal = ({visible,onClose,}) => {
                     </Form>
                 </Flex>
             </Modal>
-            <ChangePlanModal visible={change} onClose={()=>setChange(false)}/> 
+            <ChangePlanModal 
+                visible={change} 
+                onClose={()=>setChange(false)} 
+                setCheckoutVisible={setCheckoutVisible}
+            /> 
+            <ConfirmationModal visible={confirm} onClose={() => setConfirm(false)} />
         </>
     )
 }

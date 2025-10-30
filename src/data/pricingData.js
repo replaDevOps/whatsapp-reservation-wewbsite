@@ -1,10 +1,12 @@
-export const pricingData = [
+const pricingData = [
     {
       key: 1,
       plan: 'Basic',
+      morewanted:'Most Popular',
       desc: 'Simple start for small setups',
-      monthlyPrice: 200,
-      yearlyPrice: 2000, // 👈 yearly price add
+      btntext:"Get Started Today",
+      monthlyPrice: '200',
+      yearlyPrice: '2000', // 👈 yearly price add
       features: [
         { key: 1, title: '1 Branch' },
         { key: 2, title: '10 Doctor/Support Accounts' },
@@ -17,9 +19,11 @@ export const pricingData = [
     {
       key: 2,
       plan: 'Standard',
+      morewanted:'Most Popular',
       desc: 'For growing & scaling clinics',
-      monthlyPrice: 300,
-      yearlyPrice: 3000,
+      btntext:"Get Started Today",
+      monthlyPrice: '300',
+      yearlyPrice: '3000',
       features: [
         { key: 1, title: 'Up to 3 Branches' },
         { key: 2, title: '3 Admin Accounts' },
@@ -35,9 +39,11 @@ export const pricingData = [
     {
       key: 3,
       plan: 'Pro',
+      morewanted:'Most Popular',
       desc: 'Advanced tools for large teams',
-      monthlyPrice: 500,
-      yearlyPrice: 5000,
+      btntext:"Get Started Today",
+      monthlyPrice: '500',
+      yearlyPrice: '5000',
       features: [
         { key: 1, title: 'Unlimited Branches' },
         { key: 2, title: 'Unlimited Admin' },
@@ -54,8 +60,10 @@ export const pricingData = [
       key: 4,
       plan: 'Enterprise',
       desc: 'Custom workflow for full control',
-      monthlyPrice: 800,
-      yearlyPrice: 8000,
+      morewanted:'Enterprise Plan',
+      btntext:"Contact Us",
+      monthlyPrice: 'Custom Price',
+      yearlyPrice: 'Custom Price',
       features: [
         { key: 1, title: 'All Pro Features' },
         { key: 2, title: 'Custom Workflow' },
@@ -65,3 +73,18 @@ export const pricingData = [
       ]
     }
   ];
+
+  const creditData = [
+    {
+        id: 1,
+        title: 'Credit & Debit Card',
+        cards:['/assets/icons/visa.webp','/assets/icons/mastercard.webp']
+    },
+    {
+        id: 2,
+        title: 'Stripe',
+        cards: '/assets/icons/stripe.webp'
+    }
+  ]
+
+export { pricingData, creditData }
