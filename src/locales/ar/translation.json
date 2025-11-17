@@ -205,5 +205,14 @@
   "Select Business Type":"حدد نوع العمل",
   "We’re just tuning up a few things":"نحن فقط نقوم بضبط بعض الأشياء",
   "We apologize for the inconvenience but system is currently undergoing planned maintenance.":"نعتذر عن الإزعاج ولكن النظام يخضع حاليًا للصيانة المخطط لها.",
-  "Developed and Maintained by REPLA Technologies PVT Ltd":"تصميم بواسطة Repla Technologies"
+  "Developed and Maintained by REPLA Technologies PVT Ltd":"تصميم بواسطة Repla Technologies",
+
+  "Upload Logo": "تحميل الشعار",
+  "Business Name": "اسم النشاط التجاري",
+  "Please enter business name": "يرجى إدخال اسم النشاط التجاري",
+  "Enter business name": "أدخل اسم النشاط التجاري",
+  "Please enter business type": "يرجى إدخال نوع النشاط التجاري",
+  "Discount Code": "رمز الخصم",
+  "Enter discount code if any": "أدخل رمز الخصم إن وجد"
+
 }

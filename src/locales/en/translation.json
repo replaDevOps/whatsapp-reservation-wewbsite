@@ -203,5 +203,13 @@
   "Select Business Type":"Select Business Type",
   "We’re just tuning up a few things":"We’re just tuning up a few things",
   "We apologize for the inconvenience but system is currently undergoing planned maintenance.":"We apologize for the inconvenience but system is currently undergoing planned maintenance.",
-  "Developed and Maintained by REPLA Technologies PVT Ltd":"Developed and Maintained by REPLA Technologies PVT Ltd"
+  "Developed and Maintained by REPLA Technologies PVT Ltd":"Developed and Maintained by REPLA Technologies PVT Ltd",
+  
+  "Upload Logo":"Upload Logo",
+  "Business Name":"Business Name",
+  "Please enter business name":"Please enter business name",
+  "Enter business name":"Enter business name",
+  "Please enter business type":"Please enter business type",
+  "Discount Code":"Discount Code",
+  "Enter discount code if any":"Enter discount code if any"
 }

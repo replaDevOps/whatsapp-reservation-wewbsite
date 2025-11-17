@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { CloseOutlined } from '@ant-design/icons'
 import { Modal, Typography, Button, Flex, Card, Form, Col, Row, Image, Radio } from 'antd'
-import { ConfirmationModal, MyDatepicker, MyInput } from '../../../components';
+import { ConfirmationModal, MyDatepicker, MyInput, MySelect, SingleFileUpload } from '../../../components';
 import { NavLink } from 'react-router-dom';
 import { ChangePlanModal } from './ChangePlanModal';
 import { useTranslation } from 'react-i18next';
 import { creditData } from '../../../data';
+import { businessType } from '../../../shared';
 
 const { Title, Text } = Typography
 const CheckoutModal = ({visible,onClose,setCheckoutVisible}) => {
@@ -14,12 +15,29 @@ const CheckoutModal = ({visible,onClose,setCheckoutVisible}) => {
     const {t} = useTranslation();
     const [selectedPlan, setSelectedPlan] = useState(creditData[0]);
     const [confirm, setConfirm] = useState(false);
+    const [uploading, setUploading] = useState(false);
     
     const handleChange = (e) => {
         const selectedkey = e.target.value;
         const planobj = creditData?.find((item) => item?.id === selectedkey)
         setSelectedPlan(planobj)
     }
+
+    const handleSingleFileUpload = async (file) => {
+        try {
+        const fileInfo = await uploadFileToServer(file);
+        const updatedDocs = [...data.documents];
+        updatedDocs[0] = {
+            title: 'Commercial Registration (CR)',
+            ...fileInfo,
+        };
+        setData((prev) => {
+            const updated = { ...prev, documents: updatedDocs };
+            return JSON.stringify(updated) !== JSON.stringify(prev) ? updated : prev;
+        });
+        } catch {
+        }
+    };
 
     return (
         <>
@@ -33,58 +51,97 @@ const CheckoutModal = ({visible,onClose,setCheckoutVisible}) => {
                 className='modal-cs'
                 footer={null}
             >
-                <Flex vertical gap={10}>
-                    <Flex vertical gap={0} className='mb-2'>
-                        <Flex justify='space-between' gap={6}>
-                            <Title level={4} className='m-0'>
-                                {t('Complete Your Subscription')}
-                            </Title>
-                            <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
-                                <CloseOutlined className='fs-18' />
-                            </Button>
-                        </Flex>                
-                        <Text className='fs-13 subtitle-color'>
-                            {t('Review your plan, select payment, and confirm to start instantly.')}
-                        </Text>
-                    </Flex>
-                    <Card className='shadow'>
-                        <Flex vertical gap={10}>
-                            <Flex vertical gap={0}>
-                                <Text className='fs-14 fw-600'>
-                                    {t('Selected Package')}
-                                </Text>
-                                <Text className='fs-13 subtitle-color'>
-                                    {t('Review the package you have chosen before proceeding')}
-                                </Text>
-                            </Flex>
-                            <Card className='shadow border-brand'>
-                                <Flex align='center' justify='space-between' gap={5}>
-                                    <Flex vertical gap={0}>
-                                        <Title level={2} className='m-0 text-brand'>
-                                            {t('Basic')}
-                                        </Title>
-                                        <Text className='fs-13 subtitle-color'>
-                                            {t('Simple start for small setups')}
-                                        </Text>
-                                    </Flex>
-                                    <Flex vertical gap={5}>
-                                        <Title level={2} className='m-0'>
-                                            <sup className='fs-12'>{t('SAR')}</sup> 
-                                            {t('200')}<sub className='fs-12 subtitle-color'>/{t('Monthly')?.toLowerCase()}</sub>
-                                        </Title>
-                                        <Button className='btn bg-brand text-white' onClick={()=>{setChange(true); setCheckoutVisible(false)}}>
-                                           {t('Change Plan')}
-                                        </Button>
-                                    </Flex>
-                                </Flex>
-                            </Card>
+                
+                <Form
+                    layout='vertical'
+                    form={form}
+                    requiredMark={false}
+                >
+                    <Flex vertical gap={10}>
+                        <Flex vertical gap={0} className='mb-2'>
+                            <Flex justify='space-between' gap={6}>
+                                <Title level={4} className='m-0'>
+                                    {t('Complete Your Subscription')}
+                                </Title>
+                                <Button type='button' onClick={onClose} className='p-0 border-0 bg-transparent'>
+                                    <CloseOutlined className='fs-18' />
+                                </Button>
+                            </Flex>                
+                            <Text className='fs-13 subtitle-color'>
+                                {t('Review your plan, select payment, and confirm to start instantly.')}
+                            </Text>
                         </Flex>
-                    </Card>
-                    <Form
-                        layout='vertical'
-                        form={form}
-                        requiredMark={false}
-                    >
+                        <Card className='shadow'>
+                            <Flex vertical gap={10}>
+                                <Flex vertical gap={0}>
+                                    <Text className='fs-14 fw-600'>
+                                        {t('Selected Package')}
+                                    </Text>
+                                    <Text className='fs-13 subtitle-color'>
+                                        {t('Review the package you have chosen before proceeding')}
+                                    </Text>
+                                </Flex>
+                                <Card className='shadow border-brand'>
+                                    <Flex align='center' justify='space-between' gap={5}>
+                                        <Flex vertical gap={0}>
+                                            <Title level={2} className='m-0 text-brand'>
+                                                {t('Basic')}
+                                            </Title>
+                                            <Text className='fs-13 subtitle-color'>
+                                                {t('Simple start for small setups')}
+                                            </Text>
+                                        </Flex>
+                                        <Flex vertical gap={5}>
+                                            <Title level={2} className='m-0'>
+                                                <sup className='fs-12'>{t('SAR')}</sup> 
+                                                {t('200')}<sub className='fs-12 subtitle-color'>/{t('Monthly')?.toLowerCase()}</sub>
+                                            </Title>
+                                            <Button className='btn bg-brand text-white' onClick={()=>{setChange(true); setCheckoutVisible(false)}}>
+                                            {t('Change Plan')}
+                                            </Button>
+                                        </Flex>
+                                    </Flex>
+                                </Card>
+                                <Row gutter={16} justify={'center'}>
+                                    <Col span={24}>
+                                        <SingleFileUpload
+                                            form={form}
+                                            name={'uploadcr'}
+                                            title={t('Upload Logo')}
+                                            onUpload={handleSingleFileUpload}
+                                            uploading={uploading}
+                                            multiple={false}
+                                        />
+                                    </Col>
+                                    <Col md={{span: 12}} span={24} className='mt-1'>
+                                        <MyInput
+                                            label={t('Business Name')}
+                                            name='businessName'
+                                            required
+                                            message={t('Please enter business name')}
+                                            placeholder={t('Enter business name')}
+                                        />
+                                    </Col>
+                                    <Col span={24} md={{span: 12}} className='mt-1'>
+                                        <MySelect
+                                            label={t("Business Type")}
+                                            name="businessType"
+                                            required
+                                            message={t("Please enter business type")}
+                                            placeholder={t("Select Business Type")}
+                                            options={businessType}
+                                        />
+                                    </Col>
+                                    <Col span={24}>
+                                        <MyInput
+                                            label={t('Discount Code')}
+                                            name='discountCode'
+                                            placeholder={t('Enter discount code if any')}
+                                        />
+                                    </Col>
+                                </Row>
+                            </Flex>
+                        </Card>
                         <Flex vertical gap={10}>
                             <Card className='shadow'>
                                 <Flex vertical gap={0}>
@@ -204,9 +261,9 @@ const CheckoutModal = ({visible,onClose,setCheckoutVisible}) => {
                                     </Col>
                                 </Row>
                             </Card>
-                        </Flex>
-                    </Form>
-                </Flex>
+                        </Flex>    
+                    </Flex>
+                </Form>
             </Modal>
             <ChangePlanModal 
                 visible={change} 

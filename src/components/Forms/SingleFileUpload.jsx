@@ -22,7 +22,7 @@ const SingleFileUpload = ({ multiple = false, name, required, message, form, tit
         // upload all files in parallel
         await Promise.all(files.map(file => onUpload(file)));
       } else {
-console.log("files",files)
+      console.log("files",files)
         await onUpload(files);
       }
       // You can show success message or update UI here if needed
@@ -77,26 +77,39 @@ console.log("files",files)
         )}
         {fileList.length > 0 && (
           <div className="w-100">
-            {fileList.map(file => (
-              <Flex key={file.uid} justify='space-between' className="w-100 p-2 mt-1 border-radius-4 file-border">
-                <Flex align='flex-start' gap={10} className='w-100'>
-                  <img src="/assets/icons/file.png" alt="file-icon" width={24} className='pt-1' fetchPriority="high" />
-                  <Flex vertical align='flex-start'>
-                    <Typography.Text strong className='text-gray'>{file.name.slice(0, 20)}{file.name.length > 20 ? '...' : ''}</Typography.Text>
-                    <Typography.Text className='fs-12'>
-                      {(file.size / 1024 / 1024).toFixed(1)} MB
-                    </Typography.Text>
+            {fileList.map(file => {
+              const isImage = file.type?.startsWith("image/");
+              const previewUrl = isImage ? URL.createObjectURL(file.originFileObj) : "";
+
+              return (
+                <Flex key={file.uid} justify='space-between' className="w-100 p-2 mt-1 border-radius-4 file-border">
+                  <Flex align='center' gap={10} className='w-100'>
+                    <img 
+                      src={previewUrl} 
+                      alt="file-icon" 
+                      width={24} 
+                      className='pt-1' 
+                      fetchPriority="high" 
+                    />
+                    <Flex vertical align='flex-start'>
+                      <Typography.Text strong className='text-gray'>
+                        {file.name.slice(0, 20)}{file.name.length > 20 ? '...' : ''}
+                      </Typography.Text>
+                      <Typography.Text className='fs-12'>
+                        {(file.size / 1024 / 1024).toFixed(1)} MB
+                      </Typography.Text>
+                    </Flex>
                   </Flex>
+                  <MinusCircleFilled 
+                    className="text-red cursor-pointer" 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleRemove(file);
+                    }}
+                  />
                 </Flex>
-                <MinusCircleFilled 
-                  className="text-red cursor-pointer" 
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleRemove(file);
-                  }}
-                />
-              </Flex>
-            ))}
+              );
+            })}
           </div>
         )}
       </Form.Item>
