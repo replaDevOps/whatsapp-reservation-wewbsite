@@ -1,18 +1,42 @@
 import { useState, useEffect } from "react";
-import { Row, Col, Flex, Typography, Segmented, Card, Divider, Image, Button } from "antd";
+import { Row, Col, Flex, Typography, Segmented } from "antd";
 import { useTranslation } from "react-i18next";
 import { pricingData } from "../../../data";
-import { CheckoutModal } from "../../UI";
+import { CheckoutModal, SubscriptionPlanCard } from "../../UI";
+import { useLazyQuery } from "@apollo/client/react";
+import { GET_SUBSCRIPTION_PLANS } from "../../../graphql/query";
 
 const { Text, Title } = Typography;
 const OurPricing = () => {
+
     const { t, i18n } = useTranslation();
     const [view, setView] = useState("");
-    const [checkoutvisible, setCheckoutVisible] = useState(false);
+    const [visibleCheckoutModal, setVisibleCheckoutModal] = useState(false)
+    const [subscriptionPlans, setSubscriptionPlans]= useState(null)
+    const [selectedSubscriptionPlan, setSelectedSubscriptionPlan]= useState(null)
+    const [getSubscriptionPlans, { data, loading }] = useLazyQuery(GET_SUBSCRIPTION_PLANS, {
+        fetchPolicy: "network-only",
+    })
+
     useEffect(() => {
         // Set default view after i18n is ready
         setView(i18n.language === "ar" ? "شهري" : "Monthly");
-    }, [i18n.language]);
+    }, [i18n.language])
+    
+    useEffect(()=>{
+        if(getSubscriptionPlans)
+            getSubscriptionPlans()
+    }, [getSubscriptionPlans])
+
+    useEffect(()=>{
+        if(data?.getSubscriptions?.length)
+            setSubscriptionPlans(data?.getSubscriptions)
+    }, [data])
+    useEffect(()=>{
+        if(selectedSubscriptionPlan)
+            setVisibleCheckoutModal(true)
+    }, [selectedSubscriptionPlan])
+    console.log("subscriptionPlan:", subscriptionPlans)
     return (
       <>
         <Row gutter={[24, 24]} justify={"center"}>
@@ -39,73 +63,25 @@ const OurPricing = () => {
 
             <Col span={24}>
                 <Row gutter={[8, 12]}>
-                    {pricingData?.map((plan) => (
-                        <Col key={plan.key} xs={24} sm={24} md={12} lg={12} xl={6}>
-                            <Card className={`h-100 price-card-hover border-radius-12 position-relative`}>
-                                <span className="pricingcard-badge">{t(plan?.morewanted)}</span>
-                                <Flex vertical gap={25} className="mt-1">
-                                    <Flex vertical gap={10}>
-                                        <Title
-                                            level={4}
-                                            className={`text-plan m-0`}
-                                        >
-                                            {t(plan?.plan)}
-                                        </Title>
-                                        <Text className={`fs-14 hover-white`}>
-                                            {t(plan?.desc)}
-                                        </Text>
-                                    </Flex>
-                                    <Title level={2} className={`m-0 hover-white`}>
-                                        <sup className={`fs-16`}>{t("SAR")}</sup>
-                                        {view === "Monthly" || view === "شهري"
-                                            ? t(plan.monthlyPrice)
-                                            : t(plan.yearlyPrice)}
-                                        <sub className="fs-16">/{view.toLowerCase()}</sub>
-                                    </Title>
-
-                                    <Divider className="m-0" />
-                                    <div className="h-feature">
-                                      <Text className={`fs-16 hover-white`}>
-                                          {t("Included Features:")}
-                                      </Text>
-                                      <div>
-                                          {plan?.features.map((feature) => (
-                                              <Flex key={feature.key} gap={10} align="middle" className="mb-2">
-                                                  <Image
-                                                      src="/assets/icons/tick.png"
-                                                      width={18}
-                                                      height={13}
-                                                      preview={false}
-                                                      alt="check icon"
-                                                      fetchPriority="high"
-                                                  />
-                                                  <Text className={`p-0 hover-white`}>
-                                                      {t(feature?.title)}
-                                                  </Text>
-                                              </Flex>
-                                          ))}
-                                      </div>
-                                    </div>
-                                    <Flex vertical gap={10} justify="center" className="hide-content">
-                                      <Divider className="m-0 bg-white" />
-                                      {
-                                        plan?.btntext === 'Contact Us' ?
-                                        <Button className='btn bg-white text-black border-0' onClick={()=>Navigate('/bookdemo')}>{t(plan?.btntext)}</Button>
-                                        :
-                                        <Button className='btn bg-white text-black border-0' onClick={()=>setCheckoutVisible(true)}>{t(plan?.btntext)}</Button>
-                                      }
-                                    </Flex>
-                                </Flex>
-                            </Card>
+                    {subscriptionPlans?.map((subscriptionPlan, index) => (
+                        <Col key={'subscription-plan-'+index} xs={24} sm={24} md={12} lg={12} xl={6}>
+                            <SubscriptionPlanCard
+                                subscriptionPlan={subscriptionPlan}
+                                setSelectedSubscriptionPlan={setSelectedSubscriptionPlan}
+                            />
                         </Col>
                     ))}
                 </Row>
             </Col>
         </Row>
         <CheckoutModal
-          visible={checkoutvisible}
-          setCheckoutVisible={setCheckoutVisible}
-          onClose={() => setCheckoutVisible(false)}
+            visible={visibleCheckoutModal}
+            selectedSubscriptionPlan={selectedSubscriptionPlan}
+            setSelectedSubscriptionPlan={setSelectedSubscriptionPlan}
+            onClose={() => {
+                setVisibleCheckoutModal(false); 
+                setSelectedSubscriptionPlan(null)
+            }}
         />
       </>
     );

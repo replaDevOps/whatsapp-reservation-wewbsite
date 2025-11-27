@@ -3,23 +3,41 @@ import { MyInput } from "../components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ArrowLeftOutlined } from "@ant-design/icons";
+import { useMutation } from "@apollo/client/react";
+import { REGISTER_SUBSCRIBER } from "../graphql/mutation";
 
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph } = Typography
+
 const Signup = () => {
+
     const [form] = Form.useForm();
     const { t } = useTranslation();
     const [toater, contextHolder] = notification.useNotification();
     const navigate = useNavigate()
-
-    const openActiveStatus = () => {
-        toater.success({
-            message: `Account created successfully!`,
-            description: 'You will be redirected towards the packages page in a moment.',
-            placement: 'topRight',
-            showProgress: true,
-        });
-    };
-
+    const [_registerSubscriber, { loading}] = useMutation(REGISTER_SUBSCRIBER, {
+        onCompleted: () => {
+            toater.success({
+                message: `Account created successfully!`,
+                description: 'You will be redirected towards the packages page in a moment.',
+                placement: 'topRight',
+                showProgress: true,
+                onClose: ()=> navigate("/signin")
+            })
+        },
+        onError: () =>{
+            toater.error({
+                message: `Error`,
+                description: 'Something went wrong. Please try again',
+                placement: 'topRight',
+                showProgress: true
+            })
+        }
+    })
+    const registerSubscriber= async ()=>{
+        const data= form.getFieldsValue()
+        delete data?.confirmPassword
+        await _registerSubscriber({ variables: { input: {...data} } })
+    }
     return (
       <>
         {contextHolder}
@@ -38,7 +56,13 @@ const Signup = () => {
                     <Paragraph className="text-grey fs-16">
                         {t("Please Signup to access your system and manage platform activities.")}
                     </Paragraph>
-                    <Form layout="vertical" form={form} requiredMark={false} className="mt-3">
+                    <Form 
+                        layout="vertical" 
+                        form={form} 
+                        requiredMark={false} 
+                        className="mt-3"
+                        onFinish={registerSubscriber}
+                    >
                         <MyInput
                             label={t("First Name")}
                             name="firstName"
@@ -54,7 +78,7 @@ const Signup = () => {
                         <Col span={24}>
                             <MyInput
                                 label="Phone Number"
-                                name="phoneNo"
+                                name="phone"
                                 required
                                 message="Please enter a valid phone number"
                                 addonBefore={
@@ -90,12 +114,28 @@ const Signup = () => {
                         <MyInput
                             label={t("Re-type Password")}
                             type="password"
-                            name="password"
+                            name="confirmPassword"
                             required
                             message="Please Enter Password Again"
                             placeholder={t("Enter Password")}
+                            validator={
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue("password") === value) {
+                                        return Promise.resolve();
+                                        }
+                                        return Promise.reject(new Error("Passwords do not match!"));
+                                    }
+                                })
+                            }
                         />
-                        <Button htmlType="submit" onClick={openActiveStatus} type="primary" className="btn bg-brand fs-16 mt-2" block>
+                        <Button 
+                            htmlType="submit" 
+                            type="primary" 
+                            className="btn bg-brand fs-16 mt-2" 
+                            loading={loading}
+                            block
+                        >
                             {t("Sign Up")}
                         </Button>
                         <Flex justify="center" className="mt-1">

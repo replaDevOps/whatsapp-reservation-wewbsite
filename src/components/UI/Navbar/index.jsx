@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dropdown, Button, Flex, Typography } from "antd";
+import { Dropdown, Button, Flex, Typography, Avatar } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import './index.css'
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -7,10 +7,14 @@ import { MobileNavbar } from "./MobileNavbar";
 import { actionsApi } from "../../../shared";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { CheckoutModal } from "../modals";
+import { CheckoutModal } from "../modals"
+import { useLocation } from "react-router-dom";
+
 const { Text } = Typography;
 
 const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
+
+    const [accessToken, setAccessToken]= useState(null)
     const [visible, setVisible] = useState(false)
     const [isFixed, setIsFixed] = useState(false);
     const [checkoutvisible, setCheckoutVisible] = useState(false);
@@ -22,7 +26,9 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
         key: "1",
         label: "English",
         flag: "https://flagcdn.com/w20/us.png",
-    });
+    })
+     const location = useLocation()
+
      useEffect(()=>{
         let lang= localStorage.getItem("lang")
         setLanguage(lang  || 'ar')
@@ -39,6 +45,7 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
         document.body.dir = i18n.dir(value);
         dispatch(actionsApi?.changeLanguage(value))
     }
+
 
     const items = [
         {
@@ -99,8 +106,13 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
+    }, [])
+    useEffect(() => {
+        console.log("Location changed:", location.pathname)
+        const token= localStorage.getItem("accessToken")
+        setAccessToken(token)
 
+    }, [location]);
 
     const handleScrollOrNavigate = (section) => {
         if (location.pathname === '/') {
@@ -179,7 +191,7 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
                             </ul>
                         </Flex>
                         <div>
-                            <Flex gap={5}>
+                            <Flex gap={5} align="center">
                                 <Dropdown menu={{ items }} trigger={['click']}>
                                     <Button className="btn">
                                         <img src={selected.flag} alt={selected.label} fetchPriority="high" className="w-20" />
@@ -187,8 +199,13 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
                                         <DownOutlined />
                                     </Button>
                                 </Dropdown>
-                                <Button className="btn" onClick={() => navigate('/signup')}>{t('Signup/Login')}</Button>
                                 <Button className="btn bg-brand text-white" onClick={() => setCheckoutVisible(true)}>{t('Purchase A Plan')}</Button>
+                                {
+                                    accessToken ?
+                                    <Avatar/>
+                                    :
+                                    <Button className="btn" onClick={() => navigate('/signup')}>{t('Signup/Login')}</Button>
+                                }
                             </Flex>
                         </div>
                     </div>

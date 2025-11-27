@@ -68,7 +68,8 @@ const AppRoutes = () => {
     <>
       <ScrollTop />
       {
-        !shouldHideNavbarFooter && <Navbar 
+        !shouldHideNavbarFooter && 
+        <Navbar 
           scrollToFeatures={() => scrollToRef(featuresRef)}
           scrollToFaqs={() => scrollToRef(faqsRef)}
           scrollToReviews={() => scrollToRef(reviewsRef)}

@@ -3,27 +3,31 @@ import { Provider } from "react-redux";
 import { store } from "./shared";
 import { CustomRF } from './CustomRF'
 import { BrowserRouter } from 'react-router-dom';
-import { ConfigProvider } from 'antd';
+import { ConfigProvider } from 'antd'
+import { ApolloProvider } from '@apollo/client/react'
+import {client} from "./config"
 function App() {
   return (
     <>
-      <Provider store={store}>
-          <ConfigProvider
-            theme={{
-              token: {
-                colorPrimary: '#07938F',
-                colorError: '#BC302F',
-              },
-              components:{
-                Timeline: {
-                  dotBg: 'transparent',
+      <ApolloProvider client={client}>
+        <Provider store={store}>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: '#07938F',
+                  colorError: '#BC302F',
                 },
-              }
-            }}
-          >
-            <CustomRF />
-          </ConfigProvider>
-      </Provider>
+                components:{
+                  Timeline: {
+                    dotBg: 'transparent',
+                  },
+                }
+              }}
+            >
+              <CustomRF />
+            </ConfigProvider>
+        </Provider>
+      </ApolloProvider>
     </>
   )
 }

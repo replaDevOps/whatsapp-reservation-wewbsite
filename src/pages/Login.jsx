@@ -1,14 +1,43 @@
-import { Row, Col, Flex, Image, Typography, Form, Checkbox, Button } from "antd";
+import { Row, Col, Flex, Image, Typography, Form, Checkbox, Button, message } from "antd";
 import { MyInput } from "../components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeftOutlined } from "@ant-design/icons";
+import { ArrowLeftOutlined } from "@ant-design/icons"
+import { useMutation } from "@apollo/client/react";
+import { LOGIN_SUBSCRIBER } from "../graphql/mutation";
 
 const { Title, Paragraph } = Typography;
 const Login = () => {
     const [form] = Form.useForm();
     const { t } = useTranslation();
     const navigate = useNavigate()
+    const [messageApi, contextHolder] = message.useMessage();
+    const [_loginSubscriber, { loading, error }] = useMutation(LOGIN_SUBSCRIBER);
+    const loginSubscriber = async () => {
+            const values = form.getFieldsValue()
+             try {
+              const { email, password } = values;
+              const { data } = await _loginSubscriber({ variables: { email, password } });
+              if (data) {
+                // store token/id
+                localStorage.setItem("accessToken", data.loginUser.token);
+                localStorage.setItem("userId", data.loginUser.user.id);
+                localStorage.setItem("email", email);
+                localStorage.setItem("password", password);
+                messageApi.success("Login successful!");
+                navigate("/")
+                // compute destination safely (it could be a string or Location object)
+              } else {
+                messageApi.error("Login failed: Invalid credentials")
+                localStorage.clear()
+              }
+            } catch (error) {
+            console.error("Login error:", error);
+            messageApi.error("Login failed: Something went wrong")
+            localStorage.clear()
+            }
+       
+      };
     return (
         <>
             <Row gutter={[12, 12]} className="w-100 m-0 h-100dvh">
@@ -31,7 +60,13 @@ const Login = () => {
                         <Paragraph className="text-grey fs-16">
                             {t("Please Sign in to access your system and manage platform activities.")}
                         </Paragraph>
-                        <Form layout="vertical" form={form} requiredMark={false} className="mt-3">
+                        <Form 
+                            layout="vertical" 
+                            form={form} 
+                            requiredMark={false} 
+                            className="mt-3"
+                            onFinish={loginSubscriber}
+                        >
                             <MyInput
                                 label={t("Email Address")}
                                 name="email"
