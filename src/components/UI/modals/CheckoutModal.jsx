@@ -6,15 +6,9 @@ import { NavLink } from 'react-router-dom';
 import { ChangePlanModal } from './ChangePlanModal';
 import { useTranslation } from 'react-i18next';
 import { creditData } from '../../../data';
-import { GET_SUBSCRIPTION_PLANS } from '../../../graphql/query';
-import { useLazyQuery } from '@apollo/client/react';
 
 const { Title, Text } = Typography
-const CheckoutModal = ({visible, selectedSubscriptionPlan, setSelectedSubscriptionPlan,onClose,setCheckoutVisible}) => {
-
-    const [getSubscriptionPlans, { data, loading }] = useLazyQuery(GET_SUBSCRIPTION_PLANS, {
-        fetchPolicy: "network-only",
-    })
+const CheckoutModal = ({visible,onClose,setCheckoutVisible}) => {
     const [form] = Form.useForm();
     const [change, setChange] = useState(false)
     const {t} = useTranslation();
@@ -67,16 +61,16 @@ const CheckoutModal = ({visible, selectedSubscriptionPlan, setSelectedSubscripti
                                 <Flex align='center' justify='space-between' gap={5}>
                                     <Flex vertical gap={0}>
                                         <Title level={2} className='m-0 text-brand'>
-                                            {t(selectedSubscriptionPlan?.type)}
+                                            {t('Basic')}
                                         </Title>
                                         <Text className='fs-13 subtitle-color'>
-                                            {t(selectedSubscriptionPlan?.description)}
+                                            {t('Simple start for small setups')}
                                         </Text>
                                     </Flex>
                                     <Flex vertical gap={5}>
                                         <Title level={2} className='m-0'>
                                             <sup className='fs-12'>{t('SAR')}</sup> 
-                                            {t(selectedSubscriptionPlan?.price)}<sub className='fs-12 subtitle-color'>/{t('Monthly')?.toLowerCase()}</sub>
+                                            {t('200')}<sub className='fs-12 subtitle-color'>/{t('Monthly')?.toLowerCase()}</sub>
                                         </Title>
                                         <Button className='btn bg-brand text-white' onClick={()=>{setChange(true); setCheckoutVisible(false)}}>
                                            {t('Change Plan')}
