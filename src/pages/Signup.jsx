@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeftOutlined } from "@ant-design/icons";
 import { useMutation } from "@apollo/client/react";
 import { REGISTER_SUBSCRIBER } from "../graphql/mutation";
+import { useEffect } from "react";
 
 const { Title, Paragraph } = Typography
 
@@ -14,29 +15,35 @@ const Signup = () => {
     const { t } = useTranslation();
     const [toater, contextHolder] = notification.useNotification();
     const navigate = useNavigate()
-    const [_registerSubscriber, { loading}] = useMutation(REGISTER_SUBSCRIBER, {
+    const [_registerSubscriber, {loading, error}] = useMutation(REGISTER_SUBSCRIBER, {
         onCompleted: () => {
             toater.success({
                 message: `Account created successfully!`,
-                description: 'You will be redirected towards the packages page in a moment.',
+                description: 'You will be redirected towards the login page in a moment.',
                 placement: 'topRight',
                 showProgress: true,
                 onClose: ()=> navigate("/signin")
             })
-        },
-        onError: () =>{
-            toater.error({
-                message: `Error`,
-                description: 'Something went wrong. Please try again',
-                placement: 'topRight',
-                showProgress: true
-            })
         }
     })
+    useEffect(()=>{
+        if(error)
+        toater.error({
+            message: `Error`,
+            description: error?.message,
+            placement: 'topRight',
+            showProgress: true
+        })
+    }, [error])
     const registerSubscriber= async ()=>{
-        const data= form.getFieldsValue()
-        delete data?.confirmPassword
-        await _registerSubscriber({ variables: { input: {...data} } })
+        try {
+            const data= form.getFieldsValue()
+            delete data?.confirmPassword
+            await _registerSubscriber({ variables: { input: {...data} } })
+        }
+        catch (error){
+
+        }
     }
     return (
       <>

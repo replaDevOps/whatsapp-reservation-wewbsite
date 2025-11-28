@@ -1,23 +1,19 @@
 import { CloseOutlined, DownOutlined } from '@ant-design/icons'
 import { Button, Drawer, Dropdown, Flex, Image, Typography } from 'antd'
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { CheckoutModal } from '../modals/CheckoutModal';
+import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next';
+import { UserProfileDropDown } from '../UserProfileDropDown';
 
 const { Text } = Typography
 
-const MobileNavbar = ({ visible, onClose }) => {
+const MobileNavbar = ({ visible, onClose, selected, items, accessToken}) => {
+
+    const {t}= useTranslation()
     const navigate = useNavigate()
-    const [isDesktop, setIsDesktop] = useState(false);
-    const [ checkoutvisible,setCheckoutVisible ] = useState(false);
-    const [selected, setSelected] = useState({
-        key: "1",
-        label: "English",
-        flag: "https://flagcdn.com/w20/us.png",
-    });
+    const [isDesktop, setIsDesktop] = useState(false)
     useEffect(() => {
         const handleResize = () => setIsDesktop(window.innerWidth > 1199);
-
         handleResize();
         window.addEventListener('resize', handleResize);
 
@@ -25,52 +21,7 @@ const MobileNavbar = ({ visible, onClose }) => {
     }, []);
 
     if (isDesktop) return null;
-    const items = [
-        {
-            key: "1",
-            label: (
-                <span
-                    onClick={() =>
-                        setSelected({
-                            key: "1",
-                            label: "English",
-                            flag: "https://flagcdn.com/w20/us.png",
-                        })
-                    }
-                >
-                    <img
-                        src="https://flagcdn.com/w20/us.png"
-                        alt="English"
-                        className='w-20 mx-8'
-                        fetchPriority="high"
-                    />
-                    English
-                </span>
-            ),
-        },
-        {
-            key: "2",
-            label: (
-                <span
-                    onClick={() =>
-                        setSelected({
-                            key: "2",
-                            label: "Arabic",
-                            flag: "https://flagcdn.com/w20/sa.png",
-                        })
-                    }
-                >
-                    <img
-                        src="https://flagcdn.com/w20/sa.png"
-                        alt="Arabic"
-                        className='w-20 mx-8'
-                        fetchPriority="high"
-                    />
-                    Arabic
-                </span>
-            ),
-        },
-    ];
+  
     return (
         <>
             <Drawer
@@ -93,51 +44,51 @@ const MobileNavbar = ({ visible, onClose }) => {
                     <ul className="nav-list">
                         <li>
                             <NavLink to={'/'}>
-                                <Text className="nav-item">Home</Text>
+                                <Text className="nav-item">{t("Home")}</Text>
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to={'/'}>
-                                <Text className="nav-item">Features</Text>
+                                <Text className="nav-item">{t("Features")}</Text>
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to={'/price'}>
-                                <Text className="nav-item">Price</Text>
+                                <Text className="nav-item">{t("Price")}</Text>
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to={'/'}>
-                                <Text className="nav-item">FAQs</Text>
+                                <Text className="nav-item">{t("FAQs")}</Text>
                             </NavLink>
                         </li>
                         <li>
                             <NavLink to={'/'}>
-                                <Text className="nav-item">Reviews</Text>
+                                <Text className="nav-item">{t("Reviews")}</Text>
                             </NavLink>
                         </li>
                     </ul>
                     <Flex vertical gap={10} align='center' justify='center' className='mt-3'>
                         <Dropdown menu={{ items }} trigger={['click']}>
                             <Button className="btn w-100">
-                                <img src={selected.flag} alt={selected.label} className='w-20' fetchPriority="high" />
-                                <span>{selected.label}</span>
+                                <img src={selected?.flag} alt={selected?.label} className='w-20' fetchPriority="high" />
+                                <span>{selected?.label}</span>
                                 <DownOutlined className='pl-2' />
                             </Button>
                         </Dropdown>
-                        <Button className='btn w-100' onClick={() => navigate('/signup')}>
-                            Signup/Login
-                        </Button>
-                        <Button className='btn bg-brand text-white w-100' onClick={()=>setCheckoutVisible(true)}>
-                            Purchase A Plan
+                        {
+                            accessToken ? 
+                            <UserProfileDropDown/> :
+                            <Button className='btn w-100' onClick={() => navigate('/signup')}>
+                                {t("Signup/Login")}
+                            </Button>
+                        }
+                        <Button className='btn bg-brand text-white w-100' onClick={()=> navigate('/subscription-plans')}>
+                            {t("Purchase A Plan")}
                         </Button>
                     </Flex>
                 </div>
             </Drawer>
-            <CheckoutModal
-                visible={checkoutvisible}
-                onClose={() => setCheckoutVisible(false)}
-            />
         </>
     )
 }

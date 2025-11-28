@@ -1,13 +1,50 @@
-import { Row, Col, Flex, Typography, Form, Button, Select, Image} from "antd";
+import { Row, Col, Flex, Typography, Form, Button, Select, Image, notification} from "antd";
 import { MyInput, MySelect } from "../components";
 import { useTranslation } from "react-i18next";
+import { BOOK_DEMO } from "../graphql/mutation";
+import { useMutation } from "@apollo/client/react";
+import { businessTypeLookup } from "../shared";
+import { useEffect } from "react";
 
-const { Title, Paragraph } = Typography;
+const { Title, Paragraph } = Typography
+
 const BookDemo = () => {
-    const [form] = Form.useForm();
-    const { t } = useTranslation();
+    const [form] = Form.useForm()
+    const { t } = useTranslation()
+    const [toater, contextHolder] = notification.useNotification()
+    const [_bookDemo, { loading, error }] = useMutation(BOOK_DEMO, {
+      onCompleted: () => {
+        toater.success({
+          message: `Demo booked successfully`,
+          description: 'Your demo has been booked successfully! Our team will contact you shortly.',
+          placement: 'topRight',
+          showProgress: true,
+          onClose: form.resetFields()
+        })
+      }
+    })
+
+    useEffect(()=>{
+      if(error)
+        toater.error({
+          message: `Error`,
+          description: error?.message,
+          placement: 'topRight',
+          showProgress: true
+        })
+    }, [error])
+    const bookDemo= async ()=>{
+      try {
+        const data= form.getFieldsValue()
+        await _bookDemo({ variables: {input : {...data} } })
+      }
+      catch (error){
+        
+      }
+    }
     return (
         <>
+          {contextHolder}
           <Row gutter={[12, 12]} className="w-100 p-0 m-0">
               <Col xs={24} sm={24} md={24} lg={12} className="login-left-side">
                   <div className="form-inner">
@@ -17,12 +54,17 @@ const BookDemo = () => {
                               "From barber shops to clinics, businesses save time and increase bookings with our system. Book a demo to see how it works for you."
                           )}
                       </Paragraph>
-                      <Form layout="vertical" form={form} requiredMark={false} className="mt-3">
+                      <Form 
+                        layout="vertical" 
+                        form={form} 
+                        className="mt-3"
+                        onFinish={bookDemo}
+                      >
                         <Row>
                           <Col span={24}>
                             <MyInput
                               label={t("Full Name")}
-                              name="fullname"
+                              name="name"
                               required
                               message={t("Please Enter Full Name")}
                               placeholder={t("Enter Full Name")}
@@ -40,7 +82,7 @@ const BookDemo = () => {
                           <Col span={24}>
                             <MyInput
                                 label={t("Phone Number")}
-                                name="phoneNo"
+                                name="phone"
                                 required
                                 message={t("Please enter a valid phone number")}
                                 addonBefore={
@@ -65,24 +107,7 @@ const BookDemo = () => {
                               required
                               message={t("Please enter business type")}
                               placeholder={t("Select Business Type")}
-                              options={[
-                                {
-                                  id: 1,
-                                  name:"Barber"
-                                },
-                                {
-                                  id: 2,
-                                  name:"Clinic"
-                                },
-                                {
-                                  id: 3,
-                                  name:"Spa"
-                                },
-                                {
-                                  id: 4,
-                                  name:"General"
-                                }
-                              ]}
+                              options={businessTypeLookup}
                             />
                           </Col>
                           <Col span={24}>
@@ -96,7 +121,13 @@ const BookDemo = () => {
                             />
                           </Col>
                           <Col span={24}>
-                            <Button type="primary" className="btn bg-brand fs-16 mt-2" block>
+                            <Button 
+                              type="primary" 
+                              className="btn bg-brand fs-16 mt-2" 
+                              block
+                              onClick={()=> form.submit()}
+                              loading={loading}
+                            >
                               {t("Send")}
                             </Button>
                           </Col>

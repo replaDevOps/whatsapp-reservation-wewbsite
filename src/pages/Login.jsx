@@ -11,30 +11,29 @@ const Login = () => {
     const [form] = Form.useForm();
     const { t } = useTranslation();
     const navigate = useNavigate()
-    const [messageApi, contextHolder] = message.useMessage();
-    const [_loginSubscriber, { loading, error }] = useMutation(LOGIN_SUBSCRIBER);
+    const [messageApi] = message.useMessage();
+    const [_loginSubscriber, { loading }] = useMutation(LOGIN_SUBSCRIBER);
     const loginSubscriber = async () => {
             const values = form.getFieldsValue()
              try {
               const { email, password } = values;
               const { data } = await _loginSubscriber({ variables: { email, password } });
               if (data) {
-                // store token/id
-                localStorage.setItem("accessToken", data.loginUser.token);
-                localStorage.setItem("userId", data.loginUser.user.id);
-                localStorage.setItem("email", email);
-                localStorage.setItem("password", password);
-                messageApi.success("Login successful!");
-                navigate("/")
-                // compute destination safely (it could be a string or Location object)
+                localStorage.setItem("accessToken", data.loginUser.token)
+                localStorage.setItem("userId", data.loginUser.user.id)
+                localStorage.setItem("user", JSON.stringify(data?.loginUser?.user))
+                localStorage.setItem("email", email)
+                navigate("/subscription-plans")
               } else {
                 messageApi.error("Login failed: Invalid credentials")
                 localStorage.clear()
               }
             } catch (error) {
-            console.error("Login error:", error);
-            messageApi.error("Login failed: Something went wrong")
-            localStorage.clear()
+                messageApi.error("Login failed: Something went wrong")
+                localStorage.removeItem("accessToken")
+                localStorage.removeItem("userId")
+                localStorage.removeItem("email")
+                localStorage.removeItem("user")
             }
        
       };
@@ -88,7 +87,13 @@ const Login = () => {
                                     {t("Forget Password?")}
                                 </NavLink>
                             </Flex>
-                            <Button htmlType="submit" type="primary" className="btn bg-brand fs-16 mt-2" block>
+                            <Button 
+                                htmlType="submit" 
+                                type="primary" 
+                                className="btn bg-brand fs-16 mt-2" 
+                                block
+                                loading={loading}
+                            >
                                 {t("Sign In")}
                             </Button>
                         </Form>

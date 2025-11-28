@@ -7,43 +7,44 @@ import { MobileNavbar } from "./MobileNavbar";
 import { actionsApi } from "../../../shared";
 import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
-import { CheckoutModal } from "../modals"
 import { useLocation } from "react-router-dom";
+import { UserProfileDropDown } from "../..";
 
 const { Text } = Typography;
 
 const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
 
+    const navigate = useNavigate()
     const [accessToken, setAccessToken]= useState(null)
     const [visible, setVisible] = useState(false)
-    const [isFixed, setIsFixed] = useState(false);
-    const [checkoutvisible, setCheckoutVisible] = useState(false);
-    const navigate = useNavigate();
+    const [isFixed, setIsFixed] = useState(false)
     const { t, i18n } = useTranslation()
     const dispatch = useDispatch()
-    const [language, setLanguage] = useState()
-    const [selected, setSelected] = useState({
-        key: "1",
-        label: "English",
-        flag: "https://flagcdn.com/w20/us.png",
-    })
+    const [selected, setSelected] = useState(null)
      const location = useLocation()
 
      useEffect(()=>{
-        let lang= localStorage.getItem("lang")
-        setLanguage(lang  || 'ar')
-        i18n.changeLanguage(lang  || 'ar')
-        dispatch(actionsApi?.changeLanguage(lang  || 'ar'))
-        document.body.dir = i18n.dir();
+        let lang= localStorage.getItem("lang") || 'ar'
+        i18n.changeLanguage(lang)
+        dispatch(actionsApi?.changeLanguage(lang))
+        document.body.dir = i18n.dir()
+        setSelected(
+            lang === 'ar' ?
+            {key: "2", label: "Arabic", flag: "https://flagcdn.com/w20/sa.png" }:
+            {key: "1", label: "English", flag: "https://flagcdn.com/w20/us.png" }
+        )
     }, []) 
 
     const handleChnage= (value)=>{
-        setLanguage(value)
         localStorage.setItem("lang", value)
         i18n?.changeLanguage(value)
-        // window.location.href='/'
         document.body.dir = i18n.dir(value);
         dispatch(actionsApi?.changeLanguage(value))
+        setSelected(
+            value === 'ar' ?
+            {key: "2", label: "Arabic", flag: "https://flagcdn.com/w20/sa.png" }:
+            {key: "1", label: "English", flag: "https://flagcdn.com/w20/us.png" }
+        )
     }
 
 
@@ -51,15 +52,7 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
         {
             key: "1",
             label: (
-                <span
-                    onClick={() =>
-                        setSelected({
-                            key: "1",
-                            label: "English",
-                            flag: "https://flagcdn.com/w20/us.png",
-                        })
-                    }
-                >
+                <span>
                     <img
                         src="https://flagcdn.com/w20/us.png"
                         alt="English"
@@ -74,15 +67,7 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
         {
             key: "2",
             label: (
-                <span
-                    onClick={() =>
-                        setSelected({
-                            key: "2",
-                            label: "Arabic",
-                            flag: "https://flagcdn.com/w20/sa.png",
-                        })
-                    }
-                >
+                <span>
                     <img
                         src="https://flagcdn.com/w20/sa.png"
                         alt="Arabic"
@@ -108,7 +93,6 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
         return () => window.removeEventListener("scroll", handleScroll);
     }, [])
     useEffect(() => {
-        console.log("Location changed:", location.pathname)
         const token= localStorage.getItem("accessToken")
         setAccessToken(token)
 
@@ -174,7 +158,7 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to={'/price'}>
+                                    <NavLink to={'/subscription-plans'}>
                                         <Text className="nav-item">{t('Price')}</Text>
                                     </NavLink>
                                 </li>
@@ -194,15 +178,20 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
                             <Flex gap={5} align="center">
                                 <Dropdown menu={{ items }} trigger={['click']}>
                                     <Button className="btn">
-                                        <img src={selected.flag} alt={selected.label} fetchPriority="high" className="w-20" />
-                                        <span>{selected.label}</span>
+                                        <img src={selected?.flag} alt={selected?.label} fetchPriority="high" className="w-20" />
+                                        <span>{selected?.label}</span>
                                         <DownOutlined />
                                     </Button>
                                 </Dropdown>
-                                <Button className="btn bg-brand text-white" onClick={() => setCheckoutVisible(true)}>{t('Purchase A Plan')}</Button>
+                                <Button 
+                                    className="btn bg-brand text-white" 
+                                    onClick={() => navigate('/subscription-plans')}
+                                >
+                                    {t('Purchase A Plan')}
+                                </Button>
                                 {
                                     accessToken ?
-                                    <Avatar/>
+                                    <UserProfileDropDown/>
                                     :
                                     <Button className="btn" onClick={() => navigate('/signup')}>{t('Signup/Login')}</Button>
                                 }
@@ -214,10 +203,9 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
             <MobileNavbar
                 visible={visible}
                 onClose={() => setVisible(false)}
-            />
-            <CheckoutModal
-                visible={checkoutvisible}
-                onClose={() => setCheckoutVisible(false)}
+                selected={selected}
+                items={items}
+                accessToken={accessToken}
             />
         </>
     );

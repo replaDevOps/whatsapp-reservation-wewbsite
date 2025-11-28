@@ -36,13 +36,13 @@ const AppRoutes = () => {
         case "/signin":
           document.title = "Login | Whatsapp reservation Website";
           break;
-          case "/bookdemo":
+          case "/book-demo":
           document.title = "Book Demo | Whatsapp reservation Website";
           break;
         case "/features":
           document.title = "Features | Whatsapp reservation Website";
           break;
-        case "/price":
+        case "/subscription-plans":
           document.title = "Price | Whatsapp reservation Website";
           break;
         case "/faqs":
@@ -81,12 +81,12 @@ const AppRoutes = () => {
           faqsRef={faqsRef}
           reviewsRef={reviewsRef}
         />} />
-        <Route path='/price' element={<PricePage />} />
+        <Route path='/subscription-plans' element={<PricePage />} />
         <Route path='/termsofuse' element={<TermsPage />} />
         <Route path='/privacypolicy' element={<PrivacyPage />} />
         <Route path='/signup' element={<Signup />} />
         <Route path='/signin' element={<Login />} />
-        <Route path='/bookdemo' element={<BookDemo />} />
+        <Route path='/book-demo' element={<BookDemo />} />
         <Route path='/maintenance' element={<MaintenancePage />} />
       </Routes>
       {

@@ -8,6 +8,14 @@ const REGISTER_SUBSCRIBER = gql`
         }
     }
 `
+const CREATE_BUSINESS = gql `
+    mutation CreateBusiness($input: CreateBusinessInput!) {
+        createBusiness(input: $input) {
+            id
+        }
+    }
+`
 export {
-    REGISTER_SUBSCRIBER
+    REGISTER_SUBSCRIBER,
+    CREATE_BUSINESS
 }

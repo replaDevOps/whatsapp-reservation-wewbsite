@@ -6,6 +6,8 @@ const LOGIN_SUBSCRIBER = gql`
       token
       user {
         id
+        firstName
+        lastName
       }
     }
   }

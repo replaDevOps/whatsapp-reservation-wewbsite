@@ -3,3 +3,7 @@ export * from './modals'
 export * from './Navbar'
 export * from './ReviewMarquee'
 export * from "./SubscriptionPlanCard"
+export * from "./BackButton"
+export * from "./SubscriptionPlanRectangularCard"
+export * from "./PlanFeature"
+export * from "./UserProfileDropDown"
