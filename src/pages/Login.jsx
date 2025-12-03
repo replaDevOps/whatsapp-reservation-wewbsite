@@ -1,4 +1,4 @@
-import { Row, Col, Flex, Image, Typography, Form, Checkbox, Button, message } from "antd";
+import { Row, Col, Flex, Image, Typography, Form, Checkbox, Button, message, notification } from "antd";
 import { MyInput } from "../components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -12,12 +12,22 @@ const Login = () => {
     const { t } = useTranslation();
     const navigate = useNavigate()
     const [messageApi] = message.useMessage();
-    const [_loginSubscriber, { loading }] = useMutation(LOGIN_SUBSCRIBER);
+    const [api, contextHolder] = notification.useNotification()
+    const [_loginSubscriber, { loading }] = useMutation(LOGIN_SUBSCRIBER, {
+        onError: (error) => {
+            api.error({
+                title: 'Error',
+                description: error?.message,
+                showProgress: true,
+                pauseOnHover: true,
+            })
+        }
+    });
     const loginSubscriber = async () => {
             const values = form.getFieldsValue()
              try {
               const { email, password } = values;
-              const { data } = await _loginSubscriber({ variables: { email, password } });
+              const { data } = await _loginSubscriber({ variables: { email, password, role: "SUBSCRIBER"} });
               if (data) {
                 localStorage.setItem("accessToken", data.loginUser.token)
                 localStorage.setItem("userId", data.loginUser.user.id)
@@ -29,7 +39,6 @@ const Login = () => {
                 localStorage.clear()
               }
             } catch (error) {
-                messageApi.error("Login failed: Something went wrong")
                 localStorage.removeItem("accessToken")
                 localStorage.removeItem("userId")
                 localStorage.removeItem("email")
@@ -39,6 +48,7 @@ const Login = () => {
       };
     return (
         <>
+            {contextHolder}
             <Row gutter={[12, 12]} className="w-100 m-0 h-100dvh">
                 <Col xs={24} sm={24} md={24} lg={12} className="login-left-side">
                     <div className="form-inner">
