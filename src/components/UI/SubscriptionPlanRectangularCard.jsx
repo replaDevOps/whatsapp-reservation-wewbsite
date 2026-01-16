@@ -20,7 +20,7 @@ const SubscriptionPlanRectangularCard= ({plan, selectedSubscriptionPlan, setSele
         >
             <Flex justify="space-between" gap={5}>
                 <Flex align="start">
-                    <Radio value={plan?.key}/>
+                    <Radio value={plan?.id} checked={selectedSubscriptionPlan?.id === plan?.id} />
                     <Flex vertical gap={0}>
                         <Title level={4} className="m-0 fw-500">{t(plan?.type)}</Title>
                         <Text className="fs-13 subtitle-color">{t(plan?.description)}</Text>

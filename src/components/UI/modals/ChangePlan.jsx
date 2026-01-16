@@ -15,6 +15,7 @@ const ChangePlan = ({subscriptionPlans, selectedSubscriptionPlan, setSelectedSub
         setFeatures(extractPlanFeatures(subscriptionPlans?.find(plan => plan?.type === selectedSubscriptionPlan?.type)))
     }
   }, [selectedSubscriptionPlan])
+
   return (
     <>
      

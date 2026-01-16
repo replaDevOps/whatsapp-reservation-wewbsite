@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dropdown, Button, Flex, Typography, Avatar } from "antd";
+import { Dropdown, Button, Flex, Typography } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import './index.css'
 import { Link, NavLink, useNavigate } from "react-router-dom";
@@ -21,9 +21,9 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
     const { t, i18n } = useTranslation()
     const dispatch = useDispatch()
     const [selected, setSelected] = useState(null)
-     const location = useLocation()
+    const location = useLocation()
 
-     useEffect(()=>{
+    useEffect(()=>{
         let lang= localStorage.getItem("lang") || 'ar'
         i18n.changeLanguage(lang)
         dispatch(actionsApi?.changeLanguage(lang))
@@ -95,7 +95,6 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
     useEffect(() => {
         const token= localStorage.getItem("accessToken")
         setAccessToken(token)
-
     }, [location]);
 
     const handleScrollOrNavigate = (section) => {

@@ -140,7 +140,7 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
                                             <Col span={24}>
                                                 <MyInput
                                                     label={t('Discount Code')}
-                                                    name='discountCodeId'
+                                                    name='discountCode'
                                                     placeholder={t('Enter discount code if any')}
                                                 />
                                             </Col>
