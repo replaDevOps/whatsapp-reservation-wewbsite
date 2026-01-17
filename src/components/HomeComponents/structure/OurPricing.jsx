@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
-import { Row, Col, Flex, Typography, Segmented } from "antd";
+import { Row, Col, Flex, Typography, Segmented, Spin } from "antd";
 import { useTranslation } from "react-i18next"
 import { CheckoutModal, SubscriptionPlanCard } from "../../UI"
 import { useLazyQuery } from "@apollo/client/react"
 import { GET_SUBSCRIPTION_PLANS } from "../../../graphql/query"
-import { subscriptionValidityLookup } from "../../../shared";
+import { subscriptionValidityLookup, TableLoader } from "../../../shared";
 
 const { Text, Title } = Typography;
 const OurPricing = () => {
@@ -55,6 +55,13 @@ const OurPricing = () => {
             <Col span={24}>
                 <Row gutter={[8, 12]}>
                     {
+                        loading ?
+                        <Col span={24}>
+                            <Flex justify="center" align="center" >
+                                <Spin {...TableLoader} size="small" />
+                            </Flex>
+                        </Col>
+                        :
                         subscriptionPlans?.map((subscriptionPlan, index) => (
                             <Col key={'subscription-plan-'+index} xs={24} sm={24} md={12} lg={12} xl={6}>
                                 <SubscriptionPlanCard

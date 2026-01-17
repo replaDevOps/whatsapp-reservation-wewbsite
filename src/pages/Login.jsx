@@ -1,26 +1,23 @@
 import { Row, Col, Flex, Image, Typography, Form, Checkbox, Button, message, notification } from "antd";
-import { MyInput } from "../components";
+import { LanguageChange, MyInput } from "../components";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { ArrowLeftOutlined } from "@ant-design/icons"
+import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons"
 import { useMutation } from "@apollo/client/react";
 import { LOGIN_SUBSCRIBER } from "../graphql/mutation";
+import { notifyError, notifySuccess } from "../shared";
 
 const { Title, Paragraph } = Typography;
 const Login = () => {
     const [form] = Form.useForm();
-    const { t } = useTranslation();
+    const { t,i18n } = useTranslation();
+    const isArabic = i18n.language === 'ar'
     const navigate = useNavigate()
     const [messageApi] = message.useMessage();
     const [api, contextHolder] = notification.useNotification()
     const [_loginSubscriber, { loading }] = useMutation(LOGIN_SUBSCRIBER, {
         onError: (error) => {
-            api.error({
-                title: 'Error',
-                description: error?.message,
-                showProgress: true,
-                pauseOnHover: true,
-            })
+            notifyError(api,error)
         }
     });
     const loginSubscriber = async () => {
@@ -33,9 +30,10 @@ const Login = () => {
                 localStorage.setItem("userId", data.loginUser.user.id)
                 localStorage.setItem("user", JSON.stringify(data?.loginUser?.user))
                 localStorage.setItem("email", email)
+                notifySuccess(api, t("Login successful!"));
                 navigate("/subscription-plans")
               } else {
-                messageApi.error("Login failed: Invalid credentials")
+                messageApi.error(t("Login failed: Invalid credentials"))
                 localStorage.clear()
               }
             } catch (error) {
@@ -50,10 +48,12 @@ const Login = () => {
         <>
             {contextHolder}
             <Row gutter={[12, 12]} className="w-100 m-0 h-100dvh">
-                <Col xs={24} sm={24} md={24} lg={12} className="login-left-side">
+                <Col xs={24} sm={24} md={24} lg={10} className="login-left-side">
                     <div className="form-inner">
                         <Button aria-labelledby="Arrow left" shape="circle" onClick={() => navigate("/")}>
-                            <ArrowLeftOutlined />
+                            {
+                                isArabic ? <ArrowRightOutlined /> : <ArrowLeftOutlined />
+                            } 
                         </Button>
                         <NavLink to={"/"}>
                             <div className="logo">
@@ -109,15 +109,20 @@ const Login = () => {
                         </Form>
                     </div>
                 </Col>
-                <Col xs={0} sm={0} md={24} lg={12} className="login-right-side">
-                    <Flex vertical gap={50} align="center" className="h-100">
-                        <Flex vertical align="center" gap={5}>
-                            <Title className="m-0">{t("Simplify Your Bookings")}</Title>
-                            <Title className="m-0 text-brand">
-                                {t("Streamline")} <span className="bg-text">{t("Your Day")}</span>
+                <Col xs={0} md={12} lg={14} className="login-right-side">
+                    <Flex justify="end">
+                        <LanguageChange languageClass="btn" />
+                    </Flex>
+                    <Flex vertical justify="space-between" align="center" gap={40} className="logo-sp">
+                        <Flex vertical align="center" gap={20}>
+                            <Title level={2} className="m-0">
+                                {t("Simplify Your Bookings,")}
+                            </Title>
+                            <Title level={2} className="m-0 text-dark-brand">
+                                {t("Streamline")} <span className="px-2 border-radius-12 py-2 bg-white">{t("Your Day")}.</span>
                             </Title>
                         </Flex>
-                        <Image src="/assets/images/login-img.png" alt="login banner image" fetchPriority="high" preview={false} />
+                        <Image src="/assets/images/login-frame.svg" alt='dashboard image' fetchPriority="high" preview={false} />
                     </Flex>
                 </Col>
             </Row>

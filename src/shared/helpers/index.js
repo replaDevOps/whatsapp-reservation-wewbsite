@@ -39,6 +39,31 @@ function extractPlanFeatures(plan) {
     }
     return features
 }
+
+const notifySuccess = (api, message, description, onClose) => {
+    api.success({
+        message,
+        description,
+        showProgress: true,
+        pauseOnHover: true,
+        onClose,
+        duration: 2,
+    });
+};
+
+const notifyError = (api, error) => {
+    api.error({
+        message: "Error",
+        description: error?.message || "Something went wrong",
+        showProgress: true,
+        pauseOnHover: true,
+        duration:1
+    });
+};
+
 export {
-    extractPlanFeatures
+    extractPlanFeatures,
+    notifySuccess,
+    notifyError,
 }
+export * from './TableLoader';

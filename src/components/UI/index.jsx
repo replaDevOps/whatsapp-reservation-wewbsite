@@ -7,3 +7,4 @@ export * from "./BackButton"
 export * from "./SubscriptionPlanRectangularCard"
 export * from "./PlanFeature"
 export * from "./UserProfileDropDown"
+export * from './LanguageChange'

@@ -9,6 +9,7 @@ import { useDispatch } from "react-redux";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "react-router-dom";
 import { UserProfileDropDown } from "../..";
+import { LanguageChange } from "../LanguageChange";
 
 const { Text } = Typography;
 
@@ -23,63 +24,63 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
     const [selected, setSelected] = useState(null)
     const location = useLocation()
 
-    useEffect(()=>{
-        let lang= localStorage.getItem("lang") || 'ar'
-        i18n.changeLanguage(lang)
-        dispatch(actionsApi?.changeLanguage(lang))
-        document.body.dir = i18n.dir()
-        setSelected(
-            lang === 'ar' ?
-            {key: "2", label: "Arabic", flag: "https://flagcdn.com/w20/sa.png" }:
-            {key: "1", label: "English", flag: "https://flagcdn.com/w20/us.png" }
-        )
-    }, []) 
+    // useEffect(()=>{
+    //     let lang= localStorage.getItem("lang") || 'ar'
+    //     i18n.changeLanguage(lang)
+    //     dispatch(actionsApi?.changeLanguage(lang))
+    //     document.body.dir = i18n.dir()
+    //     setSelected(
+    //         lang === 'ar' ?
+    //         {key: "2", label: "Arabic", flag: "https://flagcdn.com/w20/sa.png" }:
+    //         {key: "1", label: "English", flag: "https://flagcdn.com/w20/us.png" }
+    //     )
+    // }, []) 
 
-    const handleChnage= (value)=>{
-        localStorage.setItem("lang", value)
-        i18n?.changeLanguage(value)
-        document.body.dir = i18n.dir(value);
-        dispatch(actionsApi?.changeLanguage(value))
-        setSelected(
-            value === 'ar' ?
-            {key: "2", label: "Arabic", flag: "https://flagcdn.com/w20/sa.png" }:
-            {key: "1", label: "English", flag: "https://flagcdn.com/w20/us.png" }
-        )
-    }
+    // const handleChnage= (value)=>{
+    //     localStorage.setItem("lang", value)
+    //     i18n?.changeLanguage(value)
+    //     document.body.dir = i18n.dir(value);
+    //     dispatch(actionsApi?.changeLanguage(value))
+    //     setSelected(
+    //         value === 'ar' ?
+    //         {key: "2", label: "Arabic", flag: "https://flagcdn.com/w20/sa.png" }:
+    //         {key: "1", label: "English", flag: "https://flagcdn.com/w20/us.png" }
+    //     )
+    // }
 
 
-    const items = [
-        {
-            key: "1",
-            label: (
-                <span>
-                    <img
-                        src="https://flagcdn.com/w20/us.png"
-                        alt="English"
-                        className="w-20 mx-8"
-                        fetchPriority="high"
-                    />
-                    English
-                </span>
-            ),
-            onClick: () => handleChnage('en')
-        },
-        {
-            key: "2",
-            label: (
-                <span>
-                    <img
-                        src="https://flagcdn.com/w20/sa.png"
-                        alt="Arabic"
-                        className="w-20 mx-8"
-                        fetchPriority="high"
-                    />
-                    Arabic
-                </span>
-            ),
-            onClick: () => handleChnage('ar')
-        },
-    ];
+    // const items = [
+    //     {
+    //         key: "1",
+    //         label: (
+    //             <span>
+    //                 <img
+    //                     src="https://flagcdn.com/w20/us.png"
+    //                     alt="English"
+    //                     className="w-20 mx-8"
+    //                     fetchPriority="high"
+    //                 />
+    //                 English
+    //             </span>
+    //         ),
+    //         onClick: () => handleChnage('en')
+    //     },
+    //     {
+    //         key: "2",
+    //         label: (
+    //             <span>
+    //                 <img
+    //                     src="https://flagcdn.com/w20/sa.png"
+    //                     alt="Arabic"
+    //                     className="w-20 mx-8"
+    //                     fetchPriority="high"
+    //                 />
+    //                 Arabic
+    //             </span>
+    //         ),
+    //         onClick: () => handleChnage('ar')
+    //     },
+    // ];
     useEffect(() => {
         const handleScroll = () => {
             if (window.scrollY > 50) {
@@ -175,13 +176,14 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
                         </Flex>
                         <div>
                             <Flex gap={5} align="center">
-                                <Dropdown menu={{ items }} trigger={['click']}>
+                                {/* <Dropdown menu={{ items }} trigger={['click']}>
                                     <Button className="btn">
                                         <img src={selected?.flag} alt={selected?.label} fetchPriority="high" className="w-20" />
                                         <span>{selected?.label}</span>
                                         <DownOutlined />
                                     </Button>
-                                </Dropdown>
+                                </Dropdown> */}
+                                <LanguageChange languageClass='btn' />
                                 <Button 
                                     className="btn bg-brand text-white" 
                                     onClick={() => navigate('/subscription-plans')}
@@ -203,8 +205,9 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
                 visible={visible}
                 onClose={() => setVisible(false)}
                 selected={selected}
-                items={items}
+                // items={items}
                 accessToken={accessToken}
+                handleScrollOrNavigate={handleScrollOrNavigate}
             />
         </>
     );

@@ -7,7 +7,7 @@ import { UserProfileDropDown } from '../UserProfileDropDown';
 
 const { Text } = Typography
 
-const MobileNavbar = ({ visible, onClose, selected, items, accessToken}) => {
+const MobileNavbar = ({ visible, onClose, selected, items, accessToken,handleScrollOrNavigate}) => {
 
     const {t}= useTranslation()
     const navigate = useNavigate()
@@ -43,27 +43,27 @@ const MobileNavbar = ({ visible, onClose, selected, items, accessToken}) => {
                 <div className='mt-3'>
                     <ul className="nav-list">
                         <li>
-                            <NavLink to={'/'}>
+                            <NavLink to={'/'} onClick={()=>onClose()}>
                                 <Text className="nav-item">{t("Home")}</Text>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={'/'}>
+                            <NavLink to={'/'} onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('features');onClose()}}>
                                 <Text className="nav-item">{t("Features")}</Text>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={'/price'}>
+                            <NavLink to={'/subscription-plans'} onClick={()=>onClose()}>
                                 <Text className="nav-item">{t("Price")}</Text>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={'/'}>
+                            <NavLink to={'/'} onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('faqs');onClose()}}>
                                 <Text className="nav-item">{t("FAQs")}</Text>
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={'/'}>
+                            <NavLink to={'/'} onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('reviews');onClose()}}>
                                 <Text className="nav-item">{t("Reviews")}</Text>
                             </NavLink>
                         </li>

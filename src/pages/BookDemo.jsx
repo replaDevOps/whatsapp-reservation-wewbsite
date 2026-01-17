@@ -1,45 +1,37 @@
 import { Row, Col, Flex, Typography, Form, Button, Select, Image, notification} from "antd";
-import { MyInput, MySelect } from "../components";
+import { LanguageChange, MyInput, MySelect } from "../components";
 import { useTranslation } from "react-i18next";
 import { BOOK_DEMO } from "../graphql/mutation";
 import { useMutation } from "@apollo/client/react";
-import { businessTypeLookup } from "../shared";
-import { useEffect } from "react";
+import { businessTypeLookup, notifyError, notifySuccess } from "../shared";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 
 const { Title, Paragraph } = Typography
 
 const BookDemo = () => {
     const [form] = Form.useForm()
-    const { t } = useTranslation()
+    const navigate = useNavigate()
+    const { t,i18n } = useTranslation();
+    const isArabic  = i18n?.language === 'ar'
     const [toater, contextHolder] = notification.useNotification()
     const [_bookDemo, { loading, error }] = useMutation(BOOK_DEMO, {
       onCompleted: () => {
-        toater.success({
-          message: `Demo booked successfully`,
-          description: 'Your demo has been booked successfully! Our team will contact you shortly.',
-          placement: 'topRight',
-          showProgress: true,
-          onClose: form.resetFields()
-        })
-      }
+        notifySuccess(
+          toater,
+          t("Demo Booked"),t("Your demo has been booked successfully! Our team will contact you shortly."),
+          ()=>{form.resetFields();navigate('/')}  
+        )
+      },onError:()=>{notifyError(toater,error)}
     })
 
-    useEffect(()=>{
-      if(error)
-        toater.error({
-          message: `Error`,
-          description: error?.message,
-          placement: 'topRight',
-          showProgress: true
-        })
-    }, [error])
     const bookDemo= async ()=>{
       try {
         const data= form.getFieldsValue()
         await _bookDemo({ variables: {input : {...data} } })
       }
       catch (error){
-        
+        console.log(error)
       }
     }
     return (
@@ -48,11 +40,18 @@ const BookDemo = () => {
           <Row gutter={[12, 12]} className="w-100 p-0 m-0">
               <Col xs={24} sm={24} md={24} lg={12} className="login-left-side">
                   <div className="form-inner">
-                      <Title level={3}>{t("Book A Demo")}</Title>
+                      <Flex align="center" gap={10} className="mb-2">
+                        <Button aria-labelledby="Arrow left" shape="circle" onClick={() => navigate("/")}>
+                          {
+                            isArabic ? <ArrowRightOutlined /> : <ArrowLeftOutlined />
+                          } 
+                        </Button>
+                        <Title level={3} className="m-0">{t("Book A Demo")}</Title>
+                      </Flex>
                       <Paragraph className="text-grey fs-16">
-                          {t(
-                              "From barber shops to clinics, businesses save time and increase bookings with our system. Book a demo to see how it works for you."
-                          )}
+                        {t(
+                          "From barber shops to clinics, businesses save time and increase bookings with our system. Book a demo to see how it works for you."
+                        )}
                       </Paragraph>
                       <Form 
                         layout="vertical" 
@@ -135,7 +134,10 @@ const BookDemo = () => {
                       </Form>
                   </div>
               </Col>
-              <Col xs={24} sm={24} md={24} lg={12} className="login-right-side">
+              <Col xs={0} sm={0} md={24} lg={12} className="login-right-side">
+                  <Flex justify="end">
+                        <LanguageChange languageClass='btn' />
+                    </Flex>
                   <Flex vertical gap={50} align="center" className="h-100">
                       <Flex vertical align="center" gap={5}>
                           <div className="logo">

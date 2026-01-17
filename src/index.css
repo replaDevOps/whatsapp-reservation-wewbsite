@@ -421,9 +421,15 @@ body{
   height: 40px;
   margin-bottom: 20px;
 }
+
 .login-right-side{
-   padding: 130px 0px 0px 0px;
- background: linear-gradient(to bottom, #c6eced, #ebf6f7);
+  background: linear-gradient(to bottom, #c4eded 0%, var(--white) 100%);
+    /* background-image: url('../assets/images/login-sh.svg'); */
+    min-height: 100vh;
+    height: -webkit-fill-available;
+    position: relative;
+    z-index: 1;
+    padding: 50px 45px 0px 45px;
 }
 
 .shadow{
@@ -552,3 +558,6 @@ body{
 .mx-8{
   margin-inline: 8px !important;
 }
+
+.px-2{padding-right:.5rem!important;padding-left:.5rem!important}
+.py-2{padding-top:.5rem!important;padding-bottom:.5rem!important}

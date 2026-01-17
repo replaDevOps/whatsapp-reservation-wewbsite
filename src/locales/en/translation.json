@@ -211,5 +211,11 @@
   "Enter business name":"Enter business name",
   "Please enter business type":"Please enter business type",
   "Discount Code":"Discount Code",
-  "Enter discount code if any":"Enter discount code if any"
+  "Enter discount code if any":"Enter discount code if any",
+  "Account Create":"Account Create",
+  "Account has been created successfully! You will be redirected towards the login page in a moment.":"Account has been created successfully! You will be redirected towards the login page in a moment.",
+  "Re-type Password":"Re-type Password",
+  "Simplify Your Bookings,":"Simplify Your Bookings,",
+  "Login failed: Invalid credentials":"Login failed: Invalid credentials"
+
 }

@@ -1,15 +1,33 @@
-import React from "react";
-import { useState } from "react";
-import { Row, Col, Card, Flex, Typography, Collapse } from "antd";
+import { useEffect, useState } from "react";
+import { Row, Col, Flex, Typography, Collapse, Spin } from "antd";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
-import { faqsData } from "../../../data";
+import { useLazyQuery } from "@apollo/client/react";
+import { GET_FAQS } from "../../../graphql/query";
+import { TableLoader } from "../../../shared";
+
 const { Title, Text } = Typography;
 const { Panel } = Collapse;
-
 const Faqs = () => {
     const { t } = useTranslation();
     const [currentPanel, setCurrentPanel] = useState(["0"]);
+    const [ faqsData, setFaqsData ] = useState([])
+    const [ getFaqs, {data, loading} ] = useLazyQuery(GET_FAQS)
+
+    useEffect(()=>{
+        if(getFaqs){
+            getFaqs({
+                variables: {
+                    limit: 100,
+                    offset: 0
+                }
+            });
+        }
+    },[getFaqs])
+
+    useEffect(()=>{
+        setFaqsData(data?.getFaqs?.faqs)
+    },[data])
     return (
         <div className="common-padding">
             <div className="container">
@@ -26,46 +44,57 @@ const Faqs = () => {
                         </Flex>
                     </Col>
                     <Col xs={24} sm={24} md={24} lg={18} xl={18}>
-                        <Collapse
-                            className="collapse-fq"
-                            defaultActiveKey={["0"]}
-                            onChange={(keys) => {
-                                setCurrentPanel(keys);
-                            }}
-                            ghost
-                        >
-                            {faqsData?.map((faq, f) => (
-                                <Panel
-                                    className={currentPanel.includes(String(f)) ? "panel-active panel" : "panel"}
-                                    showArrow={false}
-                                    header={
-                                        <Title
-                                            level={5}
-                                            className={`m-0 fw-500 fs-17 ${currentPanel.includes(String(f)) ? "text-white" : ""}`}
-                                        >
-                                            <span className="mr-15"></span>
-                                            {t(faq?.title)}
-                                        </Title>
-                                    }
-                                    key={f}
-                                    extra={
-                                        currentPanel?.findIndex((x) => x == f) > -1 ? (
-                                            <MinusOutlined
-                                                className="text-white fs-18"
-                                            />
-                                        ) : (
-                                            <PlusOutlined
-                                                className="fs-18"
-                                            />
-                                        )
-                                    }
-                                >
-                                    <div>
-                                        <Text className={`fs-16 faq-desc`}>{t(faq?.description)}</Text>
-                                    </div>
-                                </Panel>
-                            ))}
-                        </Collapse>
+                        {
+                            loading ? 
+                            <Flex align="center" justify="center">
+                                <Spin {...TableLoader} size="small" />
+                            </Flex>
+                            :
+                            <Collapse
+                                className="collapse-fq"
+                                defaultActiveKey={["0"]}
+                                onChange={(keys) => {
+                                    setCurrentPanel(keys);
+                                }}
+                                ghost
+                            >
+                                {faqsData?.map((faq, f) => (
+                                    <Panel
+                                        className={currentPanel.includes(String(f)) ? "panel-active panel" : "panel"}
+                                        showArrow={false}
+                                        header={
+                                            <Title
+                                                level={5}
+                                                className={`m-0 fw-500 fs-17 ${currentPanel.includes(String(f)) ? "text-white" : ""}`}
+                                            >
+                                                <span className="mr-15">
+                                                    {
+                                                        f + 1 <= 9 ? `0${f+1}` : f+1
+                                                    }
+                                                </span>
+                                                {t(faq?.question)}
+                                            </Title>
+                                        }
+                                        key={f}
+                                        extra={
+                                            currentPanel?.findIndex((x) => x == f) > -1 ? (
+                                                <MinusOutlined
+                                                    className="text-white fs-18"
+                                                />
+                                            ) : (
+                                                <PlusOutlined
+                                                    className="fs-18"
+                                                />
+                                            )
+                                        }
+                                    >
+                                        <div>
+                                            <Text className={`fs-16 faq-desc`}>{t(faq?.answer)}</Text>
+                                        </div>
+                                    </Panel>
+                                ))}
+                            </Collapse>
+                        }
                     </Col>
                 </Row>
             </div>
