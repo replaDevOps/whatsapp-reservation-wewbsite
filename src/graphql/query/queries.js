@@ -82,6 +82,15 @@ query GetPrivacyPolicy {
   }
 }
 `
+
+const GET_MAINTENANCE_STATUS = gql`
+  query GetMaintenanceStatus {
+    getMaintenanceStatus {
+      id
+      isEnabled
+    }
+  }
+`
 export {
     GETARTICLES,
     GETARTICLE,
@@ -89,5 +98,6 @@ export {
     GETTERMSOFUSE,
     GETENDATERMS,
     GETDSATERMS,
-    GETPRIVACYPOLICY
+    GETPRIVACYPOLICY,
+    GET_MAINTENANCE_STATUS
 }

@@ -218,6 +218,9 @@
   "Account has been created successfully! You will be redirected towards the login page in a moment.": "تم إنشاء الحساب بنجاح! سيتم تحويلك إلى صفحة تسجيل الدخول بعد قليل.",
   "Re-type Password": "إعادة كتابة كلمة المرور",
   "Simplify Your Bookings,": "بسّط حجوزاتك،",
-  "Login failed: Invalid credentials": "فشل تسجيل الدخول: بيانات الدخول غير صحيحة"
+  "Login failed: Invalid credentials": "فشل تسجيل الدخول: بيانات الدخول غير صحيحة",
+  "Password should contain at least 8 characters, one uppercase letter, one number, one special character": "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل، وحرف كبير واحد، ورقم واحد، وحرف خاص واحد",
+  "Load More": "تحميل المزيد",
+  "Load Less": "تحميل أقل"
 
 }

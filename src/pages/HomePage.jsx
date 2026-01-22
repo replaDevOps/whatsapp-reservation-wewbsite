@@ -3,7 +3,7 @@ import { CustomerReviews, Faqs, HeroSection, LeftImageSection, OtherFeatures, Ou
 import { useTranslation } from 'react-i18next'
 import { useLocation } from 'react-router-dom'
 
-const HomePage = ({featuresRef, faqsRef,reviewsRef}) => {
+const HomePage = ({featuresRef, faqsRef,reviewsRef,priceRef}) => {
   const { t } = useTranslation()
   const location = useLocation();
   useEffect(() => {
@@ -15,6 +15,9 @@ const HomePage = ({featuresRef, faqsRef,reviewsRef}) => {
     }
     if (location.state?.scrollTo === 'reviews') {
       reviewsRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+    if (location.state?.scrollTo === 'prices') {
+      priceRef.current?.scrollIntoView({ behavior: "smooth" });
     }
   }, [location]);
 
@@ -49,7 +52,7 @@ const HomePage = ({featuresRef, faqsRef,reviewsRef}) => {
          imageUrl={'/assets/images/autoamted-whatsapp-bot.png'}
       />
       <OtherFeatures />
-      <div className="common-padding bg-skyblue">
+      <div className="common-padding bg-skyblue" ref={priceRef}>
         <div className="container">
           <OurPricing />
         </div>

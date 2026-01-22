@@ -61,9 +61,26 @@ const notifyError = (api, error) => {
     });
 };
 
+const capitalizeTranslated = (value, t) => {
+  if (value === null || value === undefined) return "";
+
+  // Convert value to string first
+  let str = String(value);
+
+  // If t is a function, translate it
+  if (typeof t === "function") {
+    str = String(t(value));
+  }
+
+  // Capitalize first letter, rest lowercase
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
 export {
     extractPlanFeatures,
     notifySuccess,
     notifyError,
+    capitalizeTranslated,
 }
 export * from './TableLoader';
+export * from './SmLoader'

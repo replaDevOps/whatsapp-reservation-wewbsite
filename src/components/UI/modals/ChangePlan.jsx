@@ -63,6 +63,7 @@ const ChangePlan = ({subscriptionPlans, selectedSubscriptionPlan, setSelectedSub
                 }
               <Button
                 className='btn bg-brand text-white'
+                onClick={()=>setIsChangePlan(false)}
               >
                 {t('Confirm')}
               </Button>
@@ -78,7 +79,7 @@ const ChangePlan = ({subscriptionPlans, selectedSubscriptionPlan, setSelectedSub
                 </Flex>
                 <Title className='m-0'>
                   <sup className='fs-16'>{t('SAR')}</sup>
-                  {t(selectedSubscriptionPlan?.price)}
+                  {subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price}
                   <sub className='fs-16'>/{t(subscriptionValidity).toLowerCase()}</sub>
                 </Title>
                 <Divider className='m-0' />

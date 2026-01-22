@@ -22,6 +22,8 @@
   --sky-color: #3B82F6;
   --lightest-sky: #F2F7FE;
   --border-white: #d9d9d9;
+  --green: #34C759;
+  --red-color: #FF3B30;
 }
 
 body{
@@ -432,6 +434,7 @@ body{
     padding: 50px 45px 0px 45px;
 }
 
+
 .shadow{
   box-shadow: 0px 1px 4px 0px #8592AD1A;
 }
@@ -495,8 +498,13 @@ body{
 }
 
 .h-feature{
-  height: 55dvh;
-  overflow-y: auto;
+  height: 52dvh;
+  overflow-y: hidden;
+  transition: .5s ease;
+}
+
+.h-feature.active{
+  height: auto;
 }
 
 .cursor{
@@ -561,3 +569,10 @@ body{
 
 .px-2{padding-right:.5rem!important;padding-left:.5rem!important}
 .py-2{padding-top:.5rem!important;padding-bottom:.5rem!important}
+.text-green {
+    color: var(--green) !important;
+}
+
+.text-red{
+    color: var(--red-color) !important;
+}

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Row, Col, Flex, Typography, Collapse, Spin } from "antd";
+import { Row, Col, Flex, Typography, Collapse, Spin, Button } from "antd";
 import { MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { useTranslation } from "react-i18next";
 import { useLazyQuery } from "@apollo/client/react";
@@ -13,20 +13,27 @@ const Faqs = () => {
     const [currentPanel, setCurrentPanel] = useState(["0"]);
     const [ faqsData, setFaqsData ] = useState([])
     const [ getFaqs, {data, loading} ] = useLazyQuery(GET_FAQS)
+    const [displayedCount, setDisplayedCount] = useState(5);
 
     useEffect(()=>{
         if(getFaqs){
             getFaqs({
                 variables: {
                     limit: 100,
-                    offset: 0
+                    offset: 0,
                 }
             });
         }
     },[getFaqs])
 
     useEffect(()=>{
-        setFaqsData(data?.getFaqs?.faqs)
+        const faqs = data?.getFaqs?.faqs || [];
+        const sortedFaqs = [...faqs].sort((a, b) => {
+            const dateA = new Date(a.createdAt).getTime();
+            const dateB = new Date(b.createdAt).getTime();
+            return dateA - dateB;
+        });
+        setFaqsData(sortedFaqs)
     },[data])
     return (
         <div className="common-padding">
@@ -58,7 +65,7 @@ const Faqs = () => {
                                 }}
                                 ghost
                             >
-                                {faqsData?.map((faq, f) => (
+                                {faqsData?.slice(0, displayedCount).map((faq, f) => (
                                     <Panel
                                         className={currentPanel.includes(String(f)) ? "panel-active panel" : "panel"}
                                         showArrow={false}
@@ -96,6 +103,24 @@ const Faqs = () => {
                             </Collapse>
                         }
                     </Col>
+                    {faqsData?.length > 5 && (
+                        <Col span={24}>
+                            <Flex justify="center">
+                                <Button 
+                                    className="btn"
+                                    onClick={() => {
+                                        if (displayedCount === 5) {
+                                            setDisplayedCount(faqsData.length);
+                                        } else {
+                                            setDisplayedCount(5);
+                                        }
+                                    }}
+                                >
+                                    {displayedCount === 5 ? t("Load More") : t("Load Less")}
+                                </Button>
+                            </Flex>
+                        </Col>
+                    )}
                 </Row>
             </div>
         </div>

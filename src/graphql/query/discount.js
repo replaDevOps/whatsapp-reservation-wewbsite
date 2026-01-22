@@ -22,4 +22,13 @@ const GET_DISCOUNTS = gql`
     }
 `;
 
-export {GET_DISCOUNTS}
+const VERIFY_PROMOTION_CODE = gql`
+    query VerifyPromotion($name: String!) {
+        verifyPromotion(name: $name) {
+            id
+            status
+        }
+    }
+`
+
+export {GET_DISCOUNTS,VERIFY_PROMOTION_CODE}

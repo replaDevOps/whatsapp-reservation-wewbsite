@@ -2,16 +2,17 @@ import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { CloseOutlined } from '@ant-design/icons'
-import { Modal, Typography, Button, Flex, Card, Form, Col, Row, Image, Radio } from 'antd'
+import { Modal, Typography, Button, Flex, Card, Form, Col, Row, Image, Radio, Tag, Spin, notification } from 'antd'
 import { ConfirmationModal, MyDatepicker, MyInput, MySelect } from '../../../components'
 
 import { creditData } from '../../../data';
-import { useMutation } from '@apollo/client/react';
+import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { CREATE_BUSINESS } from '../../../graphql/mutation/business';
 import { ChangePlan } from './ChangePlan';
-import { businessTypeLookup } from '../../../shared';
+import { businessTypeLookup, notifyError, notifySuccess, SmLoader } from '../../../shared';
+import { VERIFY_PROMOTION_CODE } from '../../../graphql/query'
 
-const { Title, Text } = Typography
+const { Title, Text, Paragraph } = Typography
 const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity, setSubscriptionValidity,setCheckoutVisible}) => {
     
     const [form] = Form.useForm()
@@ -19,10 +20,15 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
     const [selectedPlan, setSelectedPlan] = useState(creditData[0])
     const [isChangePlan, setIsChangePlan]= useState(false)
     const [confirm, setConfirm] = useState(false);
+    const [promoStatus, setPromoStatus] = useState(null);
+    const [ promoId, setPromoId ] = useState(null)
+    const [expanded, setExpanded] = useState(false);
+    const [ api, contextHolder ] = notification.useNotification()
+    const [ getVerifyPromotion, { data: verifyPromotionData, loading:verifyingPromotion } ] = useLazyQuery(VERIFY_PROMOTION_CODE);
     const [_createBusiness, { loading }] = useMutation(CREATE_BUSINESS, {
         onCompleted: () => {
-           setConfirm(true)
-        }
+           notifySuccess(api,'Business Create','Business has been created successfully',()=>{setConfirm(true);onClose()})
+        },onError:(error) => {notifyError(api,error)}
     })
 
     useEffect(()=>{
@@ -39,6 +45,7 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
         const subscriberId= localStorage.getItem("userId")
         data= {
             ...data,
+            discountCode: promoId?.id,
             subscriberId,
             subscriptionId: selectedSubscriptionPlan?.id,
             subscriptionType: selectedSubscriptionPlan?.type,
@@ -49,8 +56,27 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
         await _createBusiness({ variables: { input: {...data} } })
     }
 
+    const checkPromoCode = async () => {
+        const input = form.getFieldValue('discountCode')?.trim();
+
+        if (!input) {
+            setPromoStatus(null);
+            form.setFields([{ name: 'discountCode', errors: [] }]);
+            return;
+        }
+        try {
+            const res = await getVerifyPromotion({ variables: { name: input } });
+            setPromoStatus(res?.data?.verifyPromotion?.status === true);
+            setPromoId(res?.data?.verifyPromotion)
+            console.log('promoStatus',promoStatus)
+        } catch {
+            setPromoStatus(false);
+        }
+    };
+
     return (
         <>
+            {contextHolder}
             <Modal 
                 width={900}  
                 title={null}
@@ -96,14 +122,22 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
                                                 <Title level={3} className='m-0 text-brand'>
                                                     {t(selectedSubscriptionPlan?.type)}
                                                 </Title>
-                                                <Text className='fs-13 subtitle-color'>
+                                                <Paragraph
+                                                    className={`fs-13 subtitle-color`}
+                                                    ellipsis={{
+                                                        rows: 1,
+                                                        expandable:'collapsible',
+                                                        symbol: expanded ? <Text className="text-brand">less</Text> : <Text className="text-brand">more</Text>,
+                                                        onExpand: (_, info) => setExpanded(info.expanded),
+                                                    }}
+                                                >
                                                     {t(selectedSubscriptionPlan?.description)}
-                                                </Text>
+                                                </Paragraph>
                                             </Flex>
                                             <Flex vertical gap={5}>
                                                 <Title level={2} className='m-0'>
                                                     <sup className='fs-12'>{t('SAR')}</sup> 
-                                                    {selectedSubscriptionPlan?.price}<sub className='fs-12 subtitle-color'>/{t(subscriptionValidity)?.toLowerCase()}</sub>
+                                                    {subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price}<sub className='fs-12 subtitle-color'>/{t(subscriptionValidity)?.toLowerCase()}</sub>
                                                 </Title>
                                                 <Button className='btn bg-brand text-white' onClick={()=> setIsChangePlan(true)}>
                                                     {t('Change Plan')}
@@ -142,6 +176,21 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
                                                     label={t('Discount Code')}
                                                     name='discountCode'
                                                     placeholder={t('Enter discount code if any')}
+                                                    onChange={() => setPromoStatus(null)}
+                                                    suffix={
+                                                        <Flex align='center' gap={2}>
+                                                            {verifyingPromotion && <Spin {...SmLoader} size="small" />}
+
+                                                            {promoStatus !== null && !verifyingPromotion && (
+                                                            promoStatus ? (
+                                                                <Text className="text-green fs-12">{t("Valid")}</Text>
+                                                            ) : (
+                                                                <Text className="text-red fs-12">{t("Invalid")}</Text>
+                                                            )
+                                                            )}
+                                                            <Tag onClick={checkPromoCode} className='cursor'>{t('Check')}</Tag>
+                                                        </Flex>
+                                                    }
                                                 />
                                             </Col>
                                         </Row>

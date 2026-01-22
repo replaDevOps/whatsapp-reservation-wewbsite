@@ -1,5 +1,5 @@
 import { Row, Col, Flex, Typography, Form, Button, Select, Image, notification} from "antd";
-import { LanguageChange, MyInput, MySelect } from "../components";
+import { LanguageChange, MyInput, MySelect, ReviewMarquee } from "../components";
 import { useTranslation } from "react-i18next";
 import { BOOK_DEMO } from "../graphql/mutation";
 import { useMutation } from "@apollo/client/react";
@@ -76,28 +76,52 @@ const BookDemo = () => {
                               required
                               message={t("Please Enter Email Address")}
                               placeholder={t("Enter Email Address")}
+                              validator={
+                                {
+                                    type: 'email',
+                                    message: t("Please enter a valid email address"),
+                                }
+                              }
                             />
                           </Col>
                           <Col span={24}>
                             <MyInput
-                                label={t("Phone Number")}
-                                name="phone"
-                                required
-                                message={t("Please enter a valid phone number")}
-                                addonBefore={
-                                    <Select
-                                        defaultValue="+966"
-                                        className="w-80"
-                                        onChange={(value) => form.setFieldsValue({ countryCode: value })}
-                                    >
-                                        <Select.Option value="sa">+966</Select.Option>
-                                        <Select.Option value="ae">+955</Select.Option>
-                                    </Select>
-                                }
-                                placeholder=""
-                                value={form.getFieldValue("phoneNo") || ""}
-                                className="w-100"
-                              />
+                              label={t("Phone Number")}
+                              name="phone"
+                              type={'number'}
+                              required
+                              message={t("Please enter a valid phone number")}
+                              addonBefore={
+                                  <Select
+                                      defaultValue="+966"
+                                      className="w-80"
+                                      onChange={(value) => form.setFieldsValue({ countryCode: value })}
+                                  >
+                                      <Select.Option value="sa">+966</Select.Option>
+                                      <Select.Option value="ae">+955</Select.Option>
+                                  </Select>
+                              }
+                              placeholder=""
+                              className="w-100"
+                              maxLength={20}
+                              onInput={(e) => {
+                                  e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 20);
+                              }}
+                              validator={
+                                  ({ getFieldValue }) => ({
+                                      validator(_, value) {
+                                          if (!value) {
+                                              return Promise.resolve();
+                                          }
+                                          const phoneLength = value.toString().length;
+                                          if (phoneLength < 9 || phoneLength > 20) {
+                                              return Promise.reject(new Error(t("Phone number must be between 9 and 20 digits")));
+                                          }
+                                          return Promise.resolve();
+                                      }
+                                  })
+                              }
+                            />
                           </Col>
                           <Col span={24}>
                             <MySelect
@@ -134,11 +158,11 @@ const BookDemo = () => {
                       </Form>
                   </div>
               </Col>
-              <Col xs={0} sm={0} md={24} lg={12} className="login-right-side">
+              <Col xs={0} sm={0} md={24} lg={12} className="login-right-side ">
                   <Flex justify="end">
                         <LanguageChange languageClass='btn' />
                     </Flex>
-                  <Flex vertical gap={50} align="center" className="h-100">
+                  {/* <Flex vertical gap={50} align="center" className="h-100">
                       <Flex vertical align="center" gap={5}>
                           <div className="logo">
                               <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" className="h-70" />
@@ -147,6 +171,9 @@ const BookDemo = () => {
                           <Title className="m-0 bg-text text-brand">{t("QLoop!")}</Title>
                       </Flex>
                       <Image src="/assets/images/login-img.png" alt="demo banner image" fetchPriority="high" preview={false} />
+                  </Flex> */}
+                  <Flex align="center" className="h-100 px-2">
+                    <ReviewMarquee />
                   </Flex>
               </Col>
           </Row>              

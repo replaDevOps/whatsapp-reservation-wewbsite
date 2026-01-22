@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next';
 import { UserProfileDropDown } from '../UserProfileDropDown';
+import { LanguageChange } from '../LanguageChange';
 
 const { Text } = Typography
 
@@ -53,7 +54,7 @@ const MobileNavbar = ({ visible, onClose, selected, items, accessToken,handleScr
                             </NavLink>
                         </li>
                         <li>
-                            <NavLink to={'/subscription-plans'} onClick={()=>onClose()}>
+                            <NavLink to={'/'} onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('prices');onClose()}}>
                                 <Text className="nav-item">{t("Price")}</Text>
                             </NavLink>
                         </li>
@@ -69,13 +70,7 @@ const MobileNavbar = ({ visible, onClose, selected, items, accessToken,handleScr
                         </li>
                     </ul>
                     <Flex vertical gap={10} align='center' justify='center' className='mt-3'>
-                        <Dropdown menu={{ items }} trigger={['click']}>
-                            <Button className="btn w-100">
-                                <img src={selected?.flag} alt={selected?.label} className='w-20' fetchPriority="high" />
-                                <span>{selected?.label}</span>
-                                <DownOutlined className='pl-2' />
-                            </Button>
-                        </Dropdown>
+                         <LanguageChange languageClass='btn w-100' />
                         {
                             accessToken ? 
                             <UserProfileDropDown/> :

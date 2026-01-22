@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Dropdown, Button, Flex, Typography } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import './index.css'
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { MobileNavbar } from "./MobileNavbar";
 import { actionsApi } from "../../../shared";
 import { useDispatch } from "react-redux";
@@ -13,7 +13,7 @@ import { LanguageChange } from "../LanguageChange";
 
 const { Text } = Typography;
 
-const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
+const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews,scrollToPrice}) => {
 
     const navigate = useNavigate()
     const [accessToken, setAccessToken]= useState(null)
@@ -110,6 +110,9 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
             case 'reviews':
                 scrollToReviews();
                 break;
+            case 'prices':
+                scrollToPrice();
+                break;
             case 'home':
                 window.scrollTo({ top: 0, behavior: 'smooth' });
                 break;
@@ -117,6 +120,7 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
         } 
         else {
             navigate('/', { state: { scrollTo: section } });
+            window.scrollTo({ top: 0, behavior: 'smooth' })
         }
     };
 
@@ -126,11 +130,12 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
             <div className={`navbar-container ${isFixed ? "navbar-fixed" : ""}`} id="navbar">
                 <div className="navbar-sm">
                     <div className="navbar-sm-inner">
-                        <Link>
-                            <div className="navbar-logo">
-                                <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" />
-                            </div>
-                        </Link>
+                        <div 
+                            onClick={() => handleScrollOrNavigate('home')}
+                            className="navbar-logo" 
+                        >
+                            <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" />
+                        </div>
                         <div className="sp-cover" onClick={() => setVisible(true)}>
                             <span className="sp sp-1 sp-1-click"></span>
                             <span className="sp sp-2 sp-2-click"></span>
@@ -141,14 +146,15 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
                 <div className="navbar-lg">
                     <div className="navbar-lg-inner">
                         <Flex gap={20} align="center">
-                            <Link>
-                                <div className="navbar-logo">
-                                    <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" />
-                                </div>
-                            </Link>
+                            <div 
+                                onClick={() => handleScrollOrNavigate('home')}
+                                className="navbar-logo" 
+                            >
+                                <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" />
+                            </div>
                             <ul className="nav-list">
                                 <li>
-                                    <NavLink to={'/'}>
+                                    <NavLink onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('home'); }}>
                                         <Text className="nav-item">{t('Home')}</Text>
                                     </NavLink>
                                 </li>
@@ -158,7 +164,7 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews}) => {
                                     </NavLink>
                                 </li>
                                 <li>
-                                    <NavLink to={'/subscription-plans'}>
+                                    <NavLink onClick={(e) => { e.preventDefault(); handleScrollOrNavigate('prices'); }}>
                                         <Text className="nav-item">{t('Price')}</Text>
                                     </NavLink>
                                 </li>

@@ -9,6 +9,7 @@ const GET_FAQS = gql`
                 id
                 question
                 answer
+                createdAt
             }
         }
     }

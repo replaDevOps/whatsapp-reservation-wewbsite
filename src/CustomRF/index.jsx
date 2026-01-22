@@ -1,13 +1,16 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useEffect } from 'react'
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { BrowserRouter, data, Route, Routes, useLocation } from 'react-router-dom'
 import { HomePage } from '../pages/HomePage'
 import { BookDemo, Login, MaintenancePage, PricePage, PrivacyPage, Signup, TermsPage } from '../pages'
 import { Footer, Navbar } from '../components'
 import ScrollTop from '../components/ScrollTop'
 import { useDispatch } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { actionsApi } from '../shared'
+import { actionsApi, TableLoader } from '../shared'
+import { useQuery } from '@apollo/client/react'
+import { Flex, Spin } from 'antd'
+import { GET_MAINTENANCE_STATUS } from '../graphql/query'
 
 const AppRoutes = () => {
   const dispatch = useDispatch()
@@ -16,6 +19,7 @@ const AppRoutes = () => {
   const featuresRef = useRef(null);
   const faqsRef = useRef(null);
   const reviewsRef = useRef(null);
+  const priceRef = useRef(null);
   const hideNavbarFooterOn = ['/signin', '/signup', '/book-demo','/maintenance'];
   const shouldHideNavbarFooter = hideNavbarFooterOn.includes(location.pathname);
   useEffect(() => {
@@ -24,6 +28,7 @@ const AppRoutes = () => {
     dispatch(actionsApi?.changeLanguage(lang || 'ar'))
     document.body.dir = i18n.dir();
   }, [])
+
 
   useEffect(() => {
       switch (location.pathname) {
@@ -43,6 +48,9 @@ const AppRoutes = () => {
           document.title = "Features | Whatsapp reservation Website";
           break;
         case "/subscription-plans":
+          document.title = "Price | Whatsapp reservation Website";
+          break;
+        case "/prices":
           document.title = "Price | Whatsapp reservation Website";
           break;
         case "/faqs":
@@ -73,6 +81,7 @@ const AppRoutes = () => {
           scrollToFeatures={() => scrollToRef(featuresRef)}
           scrollToFaqs={() => scrollToRef(faqsRef)}
           scrollToReviews={() => scrollToRef(reviewsRef)}
+          scrollToPrice = {()=> scrollToRef(priceRef)}
         />
       }
       <Routes>
@@ -80,6 +89,7 @@ const AppRoutes = () => {
           featuresRef={featuresRef}
           faqsRef={faqsRef}
           reviewsRef={reviewsRef}
+          priceRef={priceRef}
         />} />
         <Route path='/subscription-plans' element={<PricePage />} />
         <Route path='/termsofuse' element={<TermsPage />} />
@@ -96,9 +106,18 @@ const AppRoutes = () => {
   )
 }
 const CustomRF = () => {
+  const { data,loading } = useQuery(GET_MAINTENANCE_STATUS,{
+    fetchPolicy:'cache-and-network',
+  })
+  const isUnderMaintenance = data?.getMaintenanceStatus?.isEnabled
   return (
     <BrowserRouter>
-      <AppRoutes />
+      {
+        isUnderMaintenance ? 
+          <MaintenancePage />
+        :
+          <AppRoutes />
+      }
     </BrowserRouter>
   )
 }

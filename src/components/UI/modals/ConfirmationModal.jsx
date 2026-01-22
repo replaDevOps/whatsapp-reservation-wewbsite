@@ -17,7 +17,7 @@ const ConfirmationModal = ({ visible, onClose }) => {
                     <Button type='button' className="btn" onClick={()=>navigate('/')}>
                         {t("Go To Login Page")}
                     </Button>
-                    <Button onClick={onClose} className="btn bg-brand text-white">{t("Done")}</Button>
+                    <Button onClick={()=>{navigate('/');onClose()}} className="btn bg-brand text-white">{t("Done")}</Button>
                 </Flex>
             }
         > 

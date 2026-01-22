@@ -24,7 +24,7 @@ const Signup = () => {
           t("Account Create"),t("Account has been created successfully! You will be redirected towards the login page in a moment."),
           ()=> navigate("/signin")  
         )
-      },onError:()=>{notifyError(toater,error)}
+      },onError:(error)=>{notifyError(toater,error)}
     })
     const registerSubscriber= async ()=>{
         try {
@@ -66,50 +66,84 @@ const Signup = () => {
                         <MyInput
                             label={t("First Name")}
                             name="firstName"
+                            required
                             message="Please Enter First Name"
                             placeholder={t("Enter First Name")}
                         />
                         <MyInput
                             label={t("Last Name")}
                             name="lastName"
+                            required
                             message={t("Please Enter Last Name")}
                             placeholder={t("Enter Last Name")}
                         />
-                        <Col span={24}>
-                            <MyInput
-                                label={t("Phone Number")}
-                                name="phone"
-                                required
-                                message={t("Please enter a valid phone number")}
-                                addonBefore={
-                                    <Select
-                                        defaultValue="+966"
-                                        className="w-80"
-                                        onChange={(value) => form.setFieldsValue({ countryCode: value })}
-                                    >
-                                        <Select.Option value="sa">+966</Select.Option>
-                                        <Select.Option value="ae">+955</Select.Option>
-                                    </Select>
-                                }
-                                placeholder=""
-                                value={form.getFieldValue("phoneNo") || ""}
-                                className="w-100"
-                            />
-                        </Col>
+                        <MyInput
+                            label={t("Phone Number")}
+                            name="phone"
+                            type={'number'}
+                            required
+                            message={t("Please enter a valid phone number")}
+                            addonBefore={
+                                <Select
+                                    defaultValue="+966"
+                                    className="w-80"
+                                    onChange={(value) => form.setFieldsValue({ countryCode: value })}
+                                >
+                                    <Select.Option value="sa">+966</Select.Option>
+                                    <Select.Option value="ae">+955</Select.Option>
+                                </Select>
+                            }
+                            placeholder=""
+                            className="w-100"
+                            maxLength={20}
+                            onInput={(e) => {
+                                e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 20);
+                            }}
+                            validator={
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value) {
+                                            return Promise.resolve();
+                                        }
+                                        const phoneLength = value.toString().length;
+                                        if (phoneLength < 9 || phoneLength > 20) {
+                                            return Promise.reject(new Error(t("Phone number must be between 9 and 20 digits")));
+                                        }
+                                        return Promise.resolve();
+                                    }
+                                })
+                            }
+                        />
                         <MyInput
                             label={t("Email Address")}
                             name="email"
                             required
                             message={t("Please Enter Email Address")}
                             placeholder={t("Enter Email Address")}
+                            validator={
+                                {
+                                    type: 'email',
+                                    message: t("Please enter a valid email address"),
+                                }
+                            }
                         />
                         <MyInput
                             label={t("Password")}
                             type="password"
                             name="password"
                             required
-                            message={t("Please Enter Password")}
+                            message={()=>{}}
                             placeholder={t("Enter Password")}
+                            validator={({ getFieldValue }) => ({
+                                validator: (_, value) => {
+                                    const reg = /^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.*\d).{8,}$/;
+                                    if (!reg.test(value)) {
+                                        return Promise.reject(new Error(t('Password should contain at least 8 characters, one uppercase letter, one number, one special character')));
+                                    } else {
+                                        return Promise.resolve();
+                                    }
+                                }
+                            })}
                         />
                         <MyInput
                             label={t("Re-type Password")}

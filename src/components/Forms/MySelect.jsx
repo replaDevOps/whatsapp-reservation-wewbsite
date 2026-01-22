@@ -1,6 +1,7 @@
 import {Form, Select, Typography} from 'antd';
 import './index.css'
 import { useTranslation } from 'react-i18next';
+import { capitalizeTranslated } from '../../shared';
 export const MySelect = ({withoutForm,name,label,mode,disabled,required,message,value,options, ...props}) => {
   const { t } = useTranslation();
   return (
@@ -38,7 +39,7 @@ export const MySelect = ({withoutForm,name,label,mode,disabled,required,message,
                 {...props}
                 >
                   {
-                      options?.map(opt=><Select.Option value={opt?.name} key={opt?.id}>{t(opt?.name)}</Select.Option>)
+                      options?.map(opt=><Select.Option value={opt?.name} key={opt?.id}>{t(capitalizeTranslated(opt?.name))}</Select.Option>)
                   }
               </Select>
       </Form.Item>  

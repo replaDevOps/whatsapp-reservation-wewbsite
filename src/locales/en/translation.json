@@ -216,6 +216,10 @@
   "Account has been created successfully! You will be redirected towards the login page in a moment.":"Account has been created successfully! You will be redirected towards the login page in a moment.",
   "Re-type Password":"Re-type Password",
   "Simplify Your Bookings,":"Simplify Your Bookings,",
-  "Login failed: Invalid credentials":"Login failed: Invalid credentials"
+  "Login failed: Invalid credentials":"Login failed: Invalid credentials",
+
+  "Password should contain at least 8 characters, one uppercase letter, one number, one special character":"Password should contain at least 8 characters, one uppercase letter, one number, one special character",
+  "Load More":"Load More",
+  "Load Less":"Load Less"
 
 }
