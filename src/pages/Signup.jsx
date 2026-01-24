@@ -5,7 +5,6 @@ import { useTranslation } from "react-i18next";
 import { ArrowLeftOutlined, ArrowRightOutlined } from "@ant-design/icons";
 import { useMutation } from "@apollo/client/react";
 import { REGISTER_SUBSCRIBER } from "../graphql/mutation";
-import { useEffect } from "react";
 import { notifyError, notifySuccess } from "../shared";
 
 const { Title, Paragraph } = Typography

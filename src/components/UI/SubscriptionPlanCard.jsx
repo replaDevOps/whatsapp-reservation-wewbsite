@@ -1,7 +1,7 @@
 import { Card, Flex, Divider, Button, Typography} from "antd"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
-import { extractPlanFeatures } from "../../shared"
+import { capitalizeTranslated, extractPlanFeatures } from "../../shared"
 import { PlanFeature } from ".."
 import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons"
 import { useNavigate } from "react-router-dom"
@@ -49,8 +49,26 @@ const SubscriptionPlanCard= ({subscriptionPlan, setSelectedSubscriptionPlan, sub
                 </Flex>
                 <Title level={2} className={`m-0 hover-white`}>
                     <sup className={`fs-16`}>{t("SAR")}</sup>
-                    {subscriptionValidity === 'YEARLY' ? subscriptionPlan?.price*12 : subscriptionPlan?.price}
-                    <sub className="fs-16">/{subscriptionValidity}</sub>
+                    {
+                        subscriptionValidity === 'YEARLY' ? (
+                            (subscriptionPlan?.discountYearlyPrice > 0) && (subscriptionPlan?.discountYearlyPrice !== subscriptionPlan?.yearlyPrice) ? (
+                                <>
+                                    <Text className="fs-16 hover-gray" delete>{subscriptionPlan?.yearlyPrice}</Text> {subscriptionPlan?.discountYearlyPrice}
+                                </>
+                            ) : (
+                                subscriptionPlan?.yearlyPrice
+                            )
+                        ) : (
+                            (subscriptionPlan?.discountPrice > 0) && (subscriptionPlan?.discountPrice !== subscriptionPlan?.price) ? (
+                                <>
+                                    <Text className="fs-16 hover-gray" delete>{subscriptionPlan?.price}</Text> {subscriptionPlan?.discountPrice}
+                                </>
+                            ):(
+                                subscriptionPlan?.price
+                            )
+                        )  
+                    }
+                    <sub className="fs-16">/{capitalizeTranslated(subscriptionValidity)}</sub>
                 </Title>
                 <Divider className="m-0" />
                 <div>
@@ -97,7 +115,15 @@ const SubscriptionPlanCard= ({subscriptionPlan, setSelectedSubscriptionPlan, sub
                             className='btn bg-white text-black border-0'
                             onClick={()=> {
                                 token ?
-                                setSelectedSubscriptionPlan({ "id": subscriptionPlan?.id, description: subscriptionPlan?.description, "type": subscriptionPlan?.type, "price": subscriptionPlan?.price})
+                                setSelectedSubscriptionPlan({ 
+                                    id: subscriptionPlan?.id, 
+                                    description: subscriptionPlan?.description, 
+                                    type: subscriptionPlan?.type, 
+                                    price: subscriptionPlan?.price,
+                                    yearlyPrice: subscriptionPlan?.yearlyPrice,
+                                    discountPrice:subscriptionPlan?.discountPrice,
+                                    discountYearlyPrice:subscriptionPlan?.discountYearlyPrice,
+                                })
                                 :
                                 navigate('/signup')
                             }}

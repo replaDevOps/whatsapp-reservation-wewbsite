@@ -1,6 +1,7 @@
 import { Card, Flex, Radio, Typography} from "antd"
 import { useState } from "react"
 import { useTranslation } from "react-i18next"
+import { capitalizeTranslated } from "../../shared"
 
 const {Title, Text, Paragraph}= Typography
 const SubscriptionPlanRectangularCard= ({plan, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity})=>{
@@ -15,7 +16,10 @@ const SubscriptionPlanRectangularCard= ({plan, selectedSubscriptionPlan, setSele
                         id: plan?.id, 
                         description: plan?.description, 
                         type: plan?.type, 
-                        price: plan?.price
+                        price: plan?.price,
+                        yearlyPrice: plan?.yearlyPrice,
+                        discountPrice:plan?.discountPrice,
+                        discountYearlyPrice:plan?.discountYearlyPrice,
                     }
                 )
             }}
@@ -40,8 +44,26 @@ const SubscriptionPlanRectangularCard= ({plan, selectedSubscriptionPlan, setSele
                 </Flex>
                 <Title level={3} className="m-0">
                     <sup className="fs-12">{t('SAR')}</sup>
-                    {(subscriptionValidity === 'YEARLY' ? plan?.price*12 : plan?.price)}
-                    <sub className='fs-16'>/{t(subscriptionValidity)}</sub>
+                    {
+                        subscriptionValidity === 'YEARLY' ? (
+                            (plan?.discountYearlyPrice > 0) && (plan?.discountYearlyPrice !== plan?.yearlyPrice) ? (
+                                <>
+                                    <Text className="fs-16 hover-gray" delete>{plan?.yearlyPrice}</Text> {plan?.discountYearlyPrice}
+                                </>
+                            ) : (
+                                plan?.yearlyPrice
+                            )
+                        ) : (
+                            (plan?.discountPrice > 0) && (!plan?.discountPrice !== plan?.price) ? (
+                                <>
+                                    <Text className="fs-16 hover-gray" delete>{plan?.price}</Text> {plan?.discountPrice}
+                                </>
+                            ):(
+                                plan?.price
+                            )
+                        )  
+                    }
+                    <sub className='fs-16'>/{t(capitalizeTranslated(subscriptionValidity))}</sub>
                 </Title>
             </Flex>
         </Card>

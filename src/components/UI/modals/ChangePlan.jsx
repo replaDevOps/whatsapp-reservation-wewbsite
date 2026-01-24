@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Typography, Flex, Card, Col, Row, Divider, Segmented, Button } from 'antd'
 import { useTranslation } from 'react-i18next';
 import { BackButton, PlanFeature, SubscriptionPlanRectangularCard } from '../..'
-import { extractPlanFeatures } from '../../../shared'
+import { capitalizeTranslated, extractPlanFeatures } from '../../../shared'
 
 const { Title, Text } = Typography;
 
@@ -79,8 +79,27 @@ const ChangePlan = ({subscriptionPlans, selectedSubscriptionPlan, setSelectedSub
                 </Flex>
                 <Title className='m-0'>
                   <sup className='fs-16'>{t('SAR')}</sup>
-                  {subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price}
-                  <sub className='fs-16'>/{t(subscriptionValidity).toLowerCase()}</sub>
+                  {
+                    subscriptionValidity === 'YEARLY' ? (
+                        (selectedSubscriptionPlan?.discountYearlyPrice > 0) && (selectedSubscriptionPlan?.discountYearlyPrice !== selectedSubscriptionPlan?.yearlyPrice) ? (
+                            <>
+                                <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.yearlyPrice}</Text> {selectedSubscriptionPlan?.discountYearlyPrice}
+                            </>
+                        ) : (
+                            selectedSubscriptionPlan?.yearlyPrice
+                        )
+                    ) : (
+                        (selectedSubscriptionPlan?.discountPrice > 0) && (!selectedSubscriptionPlan?.discountPrice !== selectedSubscriptionPlan?.price) ? (
+                            <>
+                                <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.price}</Text> {selectedSubscriptionPlan?.discountPrice}
+                            </>
+                        ):(
+                            selectedSubscriptionPlan?.price
+                        )
+                    )  
+                  }
+                  {/* {subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price} */}
+                  <sub className='fs-16'>/{t(capitalizeTranslated(subscriptionValidity))}</sub>
                 </Title>
                 <Divider className='m-0' />
                 <Text className='fs-16'>{t('Included Features :')}</Text>

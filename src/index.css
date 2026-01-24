@@ -468,6 +468,10 @@ body{
   transition: .5s all;
 }
 
+.hover-gray{
+  color: var(--text-color) !important;
+}
+
 .hover-white{
   color: var(--black) !important;
 }
@@ -480,6 +484,10 @@ body{
 }
 
 .price-card-hover:hover .hover-white{
+  color: var(--white) !important;
+}
+
+.price-card-hover:hover .hover-gray{
   color: var(--white) !important;
 }
 

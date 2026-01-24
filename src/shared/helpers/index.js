@@ -1,5 +1,5 @@
 function extractPlanFeatures(plan) {
-    const ignoreKeys = ["price", "__typename", "id", "type", "description"]
+    const ignoreKeys = ["yearlyPrice","discountPrice","discountYearlyPrice","price", "__typename", "id", "type", "description"]
     const labels = {
         noOfBranches: "Branch",
         noOfAdmins: "Admin",

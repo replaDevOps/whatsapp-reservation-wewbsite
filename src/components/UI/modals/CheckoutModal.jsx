@@ -9,7 +9,7 @@ import { creditData } from '../../../data';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { CREATE_BUSINESS } from '../../../graphql/mutation/business';
 import { ChangePlan } from './ChangePlan';
-import { businessTypeLookup, notifyError, notifySuccess, SmLoader } from '../../../shared';
+import { businessTypeLookup, capitalizeTranslated, notifyError, notifySuccess, SmLoader } from '../../../shared';
 import { VERIFY_PROMOTION_CODE } from '../../../graphql/query'
 
 const { Title, Text, Paragraph } = Typography
@@ -43,16 +43,20 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
     const createBusiness= async ()=>{
         let data = form.getFieldsValue()
         const subscriberId= localStorage.getItem("userId")
+        const subscriptionPrice = subscriptionValidity === 'YEARLY' 
+            ? ((selectedSubscriptionPlan?.discountYearlyPrice > 0 || selectedSubscriptionPlan?.discountYearlyPrice !== null) ? selectedSubscriptionPlan?.discountYearlyPrice : selectedSubscriptionPlan?.yearlyPrice)
+            : ((selectedSubscriptionPlan?.discountPrice > 0 || selectedSubscriptionPlan?.discountPrice !== null) ? selectedSubscriptionPlan?.discountPrice : selectedSubscriptionPlan?.price)
         data= {
             ...data,
             discountCode: promoId?.id,
             subscriberId,
             subscriptionId: selectedSubscriptionPlan?.id,
             subscriptionType: selectedSubscriptionPlan?.type,
-            subscriptionPrice: subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price,
+            subscriptionPrice,
             subscriptionValidity
         }
         delete data?.customPrice
+        console.log('business data',data)
         await _createBusiness({ variables: { input: {...data} } })
     }
 
@@ -137,7 +141,26 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
                                             <Flex vertical gap={5}>
                                                 <Title level={2} className='m-0'>
                                                     <sup className='fs-12'>{t('SAR')}</sup> 
-                                                    {subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price}<sub className='fs-12 subtitle-color'>/{t(subscriptionValidity)?.toLowerCase()}</sub>
+                                                    {
+                                                        subscriptionValidity === 'YEARLY' ? (
+                                                            (selectedSubscriptionPlan?.discountYearlyPrice > 0) && (selectedSubscriptionPlan?.discountYearlyPrice !== selectedSubscriptionPlan?.yearlyPrice) ? (
+                                                                <>
+                                                                    <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.yearlyPrice}</Text> {selectedSubscriptionPlan?.discountYearlyPrice}
+                                                                </>
+                                                            ) : (
+                                                                selectedSubscriptionPlan?.yearlyPrice
+                                                            )
+                                                        ) : (
+                                                            (selectedSubscriptionPlan?.discountPrice > 0) && (selectedSubscriptionPlan?.discountPrice !== selectedSubscriptionPlan?.price) ? (
+                                                                <>
+                                                                    <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.price}</Text> {selectedSubscriptionPlan?.discountPrice}
+                                                                </>
+                                                            ):(
+                                                                selectedSubscriptionPlan?.price
+                                                            )
+                                                        )  
+                                                    }
+                                                    <sub className='fs-12 subtitle-color'>/{t(capitalizeTranslated(subscriptionValidity))}</sub>
                                                 </Title>
                                                 <Button className='btn bg-brand text-white' onClick={()=> setIsChangePlan(true)}>
                                                     {t('Change Plan')}
