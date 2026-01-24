@@ -14,7 +14,7 @@ const CREATE_BUSINESS = gql `
             id
         }
     }
-`
+` 
 export {
     REGISTER_SUBSCRIBER,
     CREATE_BUSINESS
