@@ -44,8 +44,8 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
         let data = form.getFieldsValue()
         const subscriberId= localStorage.getItem("userId")
         const subscriptionPrice = subscriptionValidity === 'YEARLY' 
-            ? ((selectedSubscriptionPlan?.discountYearlyPrice > 0 || selectedSubscriptionPlan?.discountYearlyPrice !== null) ? selectedSubscriptionPlan?.discountYearlyPrice : selectedSubscriptionPlan?.yearlyPrice)
-            : ((selectedSubscriptionPlan?.discountPrice > 0 || selectedSubscriptionPlan?.discountPrice !== null) ? selectedSubscriptionPlan?.discountPrice : selectedSubscriptionPlan?.price)
+            ? (selectedSubscriptionPlan?.discountYearlyPrice !== null && selectedSubscriptionPlan?.discountYearlyPrice > 0 ? selectedSubscriptionPlan?.discountYearlyPrice : selectedSubscriptionPlan?.yearlyPrice)
+            : (selectedSubscriptionPlan?.discountPrice !== null && selectedSubscriptionPlan?.discountPrice > 0 ? selectedSubscriptionPlan?.discountPrice : selectedSubscriptionPlan?.price)
         data= {
             ...data,
             discountCode: promoId?.id,
