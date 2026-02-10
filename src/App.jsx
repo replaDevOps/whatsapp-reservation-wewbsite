@@ -2,10 +2,10 @@ import { useState } from 'react'
 import { Provider } from "react-redux";
 import { store } from "./shared";
 import { CustomRF } from './CustomRF'
-import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider } from 'antd'
 import { ApolloProvider } from '@apollo/client/react'
 import {client} from "./config"
+
 function App() {
   return (
     <>

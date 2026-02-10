@@ -14,7 +14,7 @@ const ConfirmationModal = ({ visible, onClose }) => {
             centered
             footer={
                 <Flex justify='center' gap={5}>
-                    <Button type='button' className="btn" onClick={()=>navigate('/')}>
+                    <Button type='link' target="_blank" className="btn" onClick={()=>navigate('https://whatsapp-reservation-client-admin-p.vercel.app/')}>
                         {t("Go To Login Page")}
                     </Button>
                     <Button onClick={()=>{navigate('/');onClose()}} className="btn bg-brand text-white">{t("Done")}</Button>

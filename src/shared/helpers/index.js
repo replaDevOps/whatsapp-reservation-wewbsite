@@ -27,7 +27,7 @@ function extractPlanFeatures(plan) {
         // Number features
         if (typeof value === "number" && value > 0) {
         features.push({
-            title: `${value} ${label}${value > 1 ? "s" : ""}`
+            title: `${value} ${label === 'Branch' ? label+'es':`${label}${value > 1 ? "s" : ""}`}`
         });
         }
         // Boolean features
@@ -76,11 +76,27 @@ const capitalizeTranslated = (value, t) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
+const refetchOnFocus = (refetch) => {
+  const handleFocus = () => {
+    if (typeof refetch === 'function') {
+      refetch();
+    }
+  };
+
+  window.addEventListener('focus', handleFocus);
+
+  return () => {
+    window.removeEventListener('focus', handleFocus);
+  };
+};
+
+
 export {
     extractPlanFeatures,
     notifySuccess,
     notifyError,
     capitalizeTranslated,
+    refetchOnFocus
 }
 export * from './TableLoader';
 export * from './SmLoader'

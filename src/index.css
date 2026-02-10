@@ -431,7 +431,7 @@ body{
     height: -webkit-fill-available;
     position: relative;
     z-index: 1;
-    padding: 50px 45px 0px 45px;
+    padding: 10px 45px 0px 0px;
 }
 
 
@@ -583,4 +583,20 @@ body{
 
 .text-red{
     color: var(--red-color) !important;
+}
+
+.ql-align-center{
+  text-align: center;
+}
+
+.ql-align-justify{
+  text-align: justify;
+}
+
+.ql-align-right{
+  text-align: right;
+}
+
+.quill-content {
+  white-space: normal;
 }

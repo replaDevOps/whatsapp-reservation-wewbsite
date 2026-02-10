@@ -148,7 +148,7 @@ const Navbar = ({scrollToFeatures,scrollToFaqs,scrollToReviews,scrollToPrice}) =
                         <Flex gap={20} align="center">
                             <div 
                                 onClick={() => handleScrollOrNavigate('home')}
-                                className="navbar-logo" 
+                                className="navbar-logo cursor" 
                             >
                                 <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" />
                             </div>

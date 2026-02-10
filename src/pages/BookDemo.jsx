@@ -158,22 +158,18 @@ const BookDemo = () => {
                       </Form>
                   </div>
               </Col>
-              <Col xs={0} sm={0} md={24} lg={12} className="login-right-side ">
+              <Col xs={0} sm={0} md={24} lg={12} className="login-right-side">
                   <Flex justify="end">
-                        <LanguageChange languageClass='btn' />
+                    <LanguageChange languageClass='btn' />
+                  </Flex>
+                  <Flex vertical gap={100} justify="space-between" className="h-100">
+                    <Flex vertical gap={3} align="center">
+                      <Title className="m-0">{t("See Why Businesses Love")}</Title>
+                      <Title className="m-0 bg-text text-brand">{t("QLoop!")}</Title>
                     </Flex>
-                  {/* <Flex vertical gap={50} align="center" className="h-100">
-                      <Flex vertical align="center" gap={5}>
-                          <div className="logo">
-                              <img src="/assets/images/logo.webp" alt="logo whatsapp reservation" fetchPriority="high" className="h-70" />
-                          </div>
-                          <Title className="m-0">{t("See Why Businesses Love")}</Title>
-                          <Title className="m-0 bg-text text-brand">{t("QLoop!")}</Title>
-                      </Flex>
-                      <Image src="/assets/images/login-img.png" alt="demo banner image" fetchPriority="high" preview={false} />
-                  </Flex> */}
-                  <Flex align="center" className="h-100 px-2">
-                    <ReviewMarquee />
+                    <Flex align="center" className="px-2">
+                      <ReviewMarquee />
+                    </Flex>
                   </Flex>
               </Col>
           </Row>              

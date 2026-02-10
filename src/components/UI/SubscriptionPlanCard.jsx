@@ -21,6 +21,8 @@ const SubscriptionPlanCard= ({subscriptionPlan, setSelectedSubscriptionPlan, sub
         }
     }, [subscriptionPlan])
 
+    console.log('features',features)
+
     return (
         <Card className={`h-100 price-card-hover border-radius-12 position-relative`}>
             {

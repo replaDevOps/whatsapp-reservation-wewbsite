@@ -32,6 +32,8 @@ const OurPricing = () => {
             setVisibleCheckoutModal(true)
     }, [selectedSubscriptionPlan])
 
+    console.log('subscription plan',subscriptionPlans)
+
     return (
       <>
         <Row gutter={[24, 24]} justify={"center"}>

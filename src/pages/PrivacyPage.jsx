@@ -1,21 +1,17 @@
-import React, { useEffect } from 'react'
-import { Card, Row, Col, Flex, Typography, Spin } from 'antd'
+import { useEffect } from 'react'
+import { Card, Row, Col, Flex, Spin } from 'antd'
 import { MainSection } from '../components'
 import { useTranslation } from 'react-i18next';
 import { useQuery } from '@apollo/client/react';
 import { GET_PRIVACY_CONTENT } from '../graphql/query';
-import { TableLoader } from '../shared';
-const {Text, Title} = Typography;
+import { refetchOnFocus, TableLoader } from '../shared';
 
 const PrivacyPage = () => {
     const {t}= useTranslation()
     const { data, loading, refetch } = useQuery(GET_PRIVACY_CONTENT);
 
     useEffect(() => {
-        const handleFocus = () => refetch();
-        window.addEventListener('focus', handleFocus);
-
-        return () => window.removeEventListener('focus', handleFocus);
+        return refetchOnFocus(refetch);
     }, [refetch]);
     
     const privacy_content = data?.getPrivacyPolicy?.content
@@ -27,19 +23,19 @@ const PrivacyPage = () => {
                     <Row>
                         <Col xs={24} sm={24} md={24} lg={24}>
                             <Card className='bg-grey border-grey'>
-                                {/* {
+                                {
                                     loading ? 
                                     <Flex align='center' justify='center'>
                                         <Spin {...TableLoader} size='small' />
                                     </Flex>
                                     :
-                                    
-                                } */}
-                                <div
-                                    dangerouslySetInnerHTML={{
-                                    __html: privacy_content,
-                                    }}
-                                ></div>
+                                    <div
+                                        dangerouslySetInnerHTML={{
+                                        __html: privacy_content,
+                                        }}
+                                    ></div>
+                                }
+                                
                             </Card>
                         </Col>
                     </Row>    

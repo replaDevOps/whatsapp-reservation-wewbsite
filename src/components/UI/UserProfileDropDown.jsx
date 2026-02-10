@@ -48,7 +48,6 @@ const UserProfileDropDown = ()=> {
     <div>
       <Dropdown
           popupRender={()=>dropdownContent}
-          trigger={['click']}
           className='p-0'
           placement='bottom'
           arrow

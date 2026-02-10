@@ -121,52 +121,56 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
                                         </Text>
                                     </Flex>
                                     <Card className='shadow border-brand'>
-                                        <Flex align='center' justify='space-between' gap={5}>
-                                            <Flex vertical gap={0}>
-                                                <Title level={3} className='m-0 text-brand'>
-                                                    {t(selectedSubscriptionPlan?.type)}
-                                                </Title>
-                                                <Paragraph
-                                                    className={`fs-13 subtitle-color`}
-                                                    ellipsis={{
-                                                        rows: 1,
-                                                        expandable:'collapsible',
-                                                        symbol: expanded ? <Text className="text-brand">less</Text> : <Text className="text-brand">more</Text>,
-                                                        onExpand: (_, info) => setExpanded(info.expanded),
-                                                    }}
-                                                >
-                                                    {t(selectedSubscriptionPlan?.description)}
-                                                </Paragraph>
-                                            </Flex>
-                                            <Flex vertical gap={5}>
-                                                <Title level={2} className='m-0'>
-                                                    <sup className='fs-12'>{t('SAR')}</sup> 
-                                                    {
-                                                        subscriptionValidity === 'YEARLY' ? (
-                                                            (selectedSubscriptionPlan?.discountYearlyPrice > 0) && (selectedSubscriptionPlan?.discountYearlyPrice !== selectedSubscriptionPlan?.yearlyPrice) ? (
-                                                                <>
-                                                                    <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.yearlyPrice}</Text> {selectedSubscriptionPlan?.discountYearlyPrice}
-                                                                </>
+                                        <Row gutter={[12,12]} align='center' justify='space-between'>
+                                            <Col span={24} md={16} lg={17}>
+                                                <Flex vertical gap={0}>
+                                                    <Title level={3} className='m-0 text-brand'>
+                                                        {t(selectedSubscriptionPlan?.type)}
+                                                    </Title>
+                                                    <Paragraph
+                                                        className={`fs-13 subtitle-color`}
+                                                        ellipsis={{
+                                                            rows: 1,
+                                                            expandable:'collapsible',
+                                                            symbol: expanded ? <Text className="text-brand">less</Text> : <Text className="text-brand">more</Text>,
+                                                            onExpand: (_, info) => setExpanded(info.expanded),
+                                                        }}
+                                                    >
+                                                        {t(selectedSubscriptionPlan?.description)}
+                                                    </Paragraph>
+                                                </Flex>
+                                            </Col>
+                                            <Col span={24} md={8} lg={7}>
+                                                <Flex vertical gap={5}>
+                                                    <Title level={2} className='m-0'>
+                                                        <sup className='fs-12'>{t('SAR')}</sup> 
+                                                        {
+                                                            subscriptionValidity === 'YEARLY' ? (
+                                                                (selectedSubscriptionPlan?.discountYearlyPrice > 0) && (selectedSubscriptionPlan?.discountYearlyPrice !== selectedSubscriptionPlan?.yearlyPrice) ? (
+                                                                    <>
+                                                                        <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.yearlyPrice}</Text> {selectedSubscriptionPlan?.discountYearlyPrice}
+                                                                    </>
+                                                                ) : (
+                                                                    selectedSubscriptionPlan?.yearlyPrice
+                                                                )
                                                             ) : (
-                                                                selectedSubscriptionPlan?.yearlyPrice
-                                                            )
-                                                        ) : (
-                                                            (selectedSubscriptionPlan?.discountPrice > 0) && (selectedSubscriptionPlan?.discountPrice !== selectedSubscriptionPlan?.price) ? (
-                                                                <>
-                                                                    <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.price}</Text> {selectedSubscriptionPlan?.discountPrice}
-                                                                </>
-                                                            ):(
-                                                                selectedSubscriptionPlan?.price
-                                                            )
-                                                        )  
-                                                    }
-                                                    <sub className='fs-12 subtitle-color'>/{t(capitalizeTranslated(subscriptionValidity))}</sub>
-                                                </Title>
-                                                <Button className='btn bg-brand text-white' onClick={()=> setIsChangePlan(true)}>
-                                                    {t('Change Plan')}
-                                                </Button>
-                                            </Flex>
-                                        </Flex>
+                                                                (selectedSubscriptionPlan?.discountPrice > 0) && (selectedSubscriptionPlan?.discountPrice !== selectedSubscriptionPlan?.price) ? (
+                                                                    <>
+                                                                        <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.price}</Text> {selectedSubscriptionPlan?.discountPrice}
+                                                                    </>
+                                                                ):(
+                                                                    selectedSubscriptionPlan?.price
+                                                                )
+                                                            )  
+                                                        }
+                                                        <sub className='fs-12 subtitle-color'>/{t(capitalizeTranslated(subscriptionValidity))}</sub>
+                                                    </Title>
+                                                    <Button className='btn bg-brand text-white' onClick={()=> setIsChangePlan(true)}>
+                                                        {t('Change Plan')}
+                                                    </Button>
+                                                </Flex>      
+                                            </Col>
+                                        </Row>
                                     </Card>
                                     <Form 
                                         layout="vertical" 
