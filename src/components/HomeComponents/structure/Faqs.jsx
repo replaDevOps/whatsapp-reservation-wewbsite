@@ -96,7 +96,7 @@ const Faqs = () => {
                                         }
                                     >
                                         <div>
-                                            <Text className={`fs-16 faq-desc`}>{t(faq?.answer)}</Text>
+                                            <Text className={`fs-16 faq-desc text-white`}>{t(faq?.answer)}</Text>
                                         </div>
                                     </Panel>
                                 ))}
