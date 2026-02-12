@@ -13,6 +13,7 @@ const OurPricing = () => {
     const [visibleCheckoutModal, setVisibleCheckoutModal] = useState(false)
     const [subscriptionPlans, setSubscriptionPlans]= useState(null)
     const [selectedSubscriptionPlan, setSelectedSubscriptionPlan]= useState(null)
+    const [ discountData, setDiscountData ] = useState(null)
     const [subscriptionValidity, setSubscriptionValidity]= useState("MONTHLY")
     const [getSubscriptionPlans, { data, loading }] = useLazyQuery(GET_SUBSCRIPTION_PLANS, {
         fetchPolicy: "network-only",
@@ -84,9 +85,12 @@ const OurPricing = () => {
             setSelectedSubscriptionPlan={setSelectedSubscriptionPlan}
             subscriptionValidity={subscriptionValidity}
             setSubscriptionValidity={setSubscriptionValidity}
+            discountData={discountData}
+            setDiscountData={setDiscountData}
             onClose={() => {
                 setVisibleCheckoutModal(false); 
-                setSelectedSubscriptionPlan(null)
+                setSelectedSubscriptionPlan(null);
+                setDiscountData(null);
             }}
         />
       </>
