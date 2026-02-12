@@ -1,30 +1,31 @@
 import { useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { data, NavLink } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { CloseOutlined } from '@ant-design/icons'
 import { Modal, Typography, Button, Flex, Card, Form, Col, Row, Image, Radio, Tag, Spin, notification } from 'antd'
 import { ConfirmationModal, MyDatepicker, MyInput, MySelect } from '../../../components'
-
 import { creditData } from '../../../data';
 import { useLazyQuery, useMutation } from '@apollo/client/react';
 import { CREATE_BUSINESS } from '../../../graphql/mutation/business';
 import { ChangePlan } from './ChangePlan';
 import { businessTypeLookup, capitalizeTranslated, notifyError, notifySuccess, SmLoader } from '../../../shared';
-import { VERIFY_PROMOTION_CODE } from '../../../graphql/query'
+import { VERIFY_DISCOUNT } from '../../../graphql/query'
 
 const { Title, Text, Paragraph } = Typography
-const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity, setSubscriptionValidity,setCheckoutVisible}) => {
+const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptionPlan, setSelectedSubscriptionPlan, subscriptionValidity, setSubscriptionValidity,discountData, setDiscountData}) => {
     
     const [form] = Form.useForm()
     const {t} = useTranslation()
     const [selectedPlan, setSelectedPlan] = useState(creditData[0])
     const [isChangePlan, setIsChangePlan]= useState(false)
     const [confirm, setConfirm] = useState(false);
-    const [promoStatus, setPromoStatus] = useState(null);
-    const [ promoId, setPromoId ] = useState(null)
-    const [expanded, setExpanded] = useState(false);
+    const [discountStatus, setDiscountStatus] = useState(null);
+    const [expanded, setExpanded] = useState(false);    
+    const subscriberId= localStorage.getItem("userId")
     const [ api, contextHolder ] = notification.useNotification()
-    const [ getVerifyPromotion, { data: verifyPromotionData, loading:verifyingPromotion } ] = useLazyQuery(VERIFY_PROMOTION_CODE);
+    const [ getVerifyDiscount, { loading:verifyingDiscount } ] = useLazyQuery(VERIFY_DISCOUNT,{
+        fetchPolicy:'network-only',
+    });
     const [_createBusiness, { loading }] = useMutation(CREATE_BUSINESS, {
         onCompleted: () => {
            notifySuccess(api,'Business Create','Business has been created successfully',()=>{setConfirm(true);onClose()})
@@ -34,7 +35,16 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
     useEffect(()=>{
         if(!visible)
             form.resetFields()
+            setDiscountStatus(null)
     }, [visible])
+
+    // Clear discount when subscription validity or plan changes
+    useEffect(() => {
+        setDiscountStatus(null);
+        setDiscountData(null);
+        form.setFields([{ name: 'code', errors: [], value: '' }]);
+    }, [subscriptionValidity, selectedSubscriptionPlan?.id])
+    
     const handleChange = (e) => {
         const selectedkey = e.target.value;
         const planobj = creditData?.find((item) => item?.id === selectedkey)
@@ -42,39 +52,42 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
     }
     const createBusiness= async ()=>{
         let data = form.getFieldsValue()
-        const subscriberId= localStorage.getItem("userId")
-        const subscriptionPrice = subscriptionValidity === 'YEARLY' 
-            ? (selectedSubscriptionPlan?.discountYearlyPrice !== null && selectedSubscriptionPlan?.discountYearlyPrice > 0 ? selectedSubscriptionPlan?.discountYearlyPrice : selectedSubscriptionPlan?.yearlyPrice)
-            : (selectedSubscriptionPlan?.discountPrice !== null && selectedSubscriptionPlan?.discountPrice > 0 ? selectedSubscriptionPlan?.discountPrice : selectedSubscriptionPlan?.price)
+        const subscriptionPrice = subscriptionValidity === 'YEARLY' ?  selectedSubscriptionPlan?.yearlyPrice : selectedSubscriptionPlan?.price
         data= {
             ...data,
-            discountCode: promoId?.id,
+            discountCode: discountData?.discount.id,
             subscriberId,
             subscriptionId: selectedSubscriptionPlan?.id,
             subscriptionType: selectedSubscriptionPlan?.type,
-            subscriptionPrice,
+            subscriptionPrice: discountData?.finalPrice ? discountData?.finalPrice : subscriptionPrice,
             subscriptionValidity
         }
         delete data?.customPrice
         console.log('business data',data)
+        return;
         await _createBusiness({ variables: { input: {...data} } })
     }
 
-    const checkPromoCode = async () => {
-        const input = form.getFieldValue('discountCode')?.trim();
-
-        if (!input) {
-            setPromoStatus(null);
-            form.setFields([{ name: 'discountCode', errors: [] }]);
+    const checkDiscountCode = async () => {
+        const code = form.getFieldValue('code')?.trim();
+        if (!code) {
+            setDiscountStatus(null);
+            setDiscountData(null);
+            form.setFields([{ name: 'code', errors: [] }]);
             return;
         }
         try {
-            const res = await getVerifyPromotion({ variables: { name: input } });
-            setPromoStatus(res?.data?.verifyPromotion?.status === true);
-            setPromoId(res?.data?.verifyPromotion)
-            console.log('promoStatus',promoStatus)
-        } catch {
-            setPromoStatus(false);
+            setDiscountData(null);
+            const res = await getVerifyDiscount({ variables: { code, subscriberId, subscriptionId:selectedSubscriptionPlan?.id } });
+            setDiscountStatus(res?.data?.checkDiscountCode?.isValid === true);
+            setDiscountData(res?.data?.checkDiscountCode);
+            if (res?.data?.checkDiscountCode?.isValid === false) {
+                notifyError(api,res?.data?.checkDiscountCode?.message);
+            }
+        } catch (error) {
+            setDiscountStatus(false);
+            setDiscountData(null);
+            console.error(error);
         }
     };
 
@@ -146,21 +159,9 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
                                                         <sup className='fs-12'>{t('SAR')}</sup> 
                                                         {
                                                             subscriptionValidity === 'YEARLY' ? (
-                                                                (selectedSubscriptionPlan?.discountYearlyPrice > 0) && (selectedSubscriptionPlan?.discountYearlyPrice !== selectedSubscriptionPlan?.yearlyPrice) ? (
-                                                                    <>
-                                                                        <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.yearlyPrice}</Text> {selectedSubscriptionPlan?.discountYearlyPrice}
-                                                                    </>
-                                                                ) : (
-                                                                    selectedSubscriptionPlan?.yearlyPrice
-                                                                )
+                                                                discountData?.finalPrice ?  discountData?.finalPrice : selectedSubscriptionPlan?.yearlyPrice
                                                             ) : (
-                                                                (selectedSubscriptionPlan?.discountPrice > 0) && (selectedSubscriptionPlan?.discountPrice !== selectedSubscriptionPlan?.price) ? (
-                                                                    <>
-                                                                        <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.price}</Text> {selectedSubscriptionPlan?.discountPrice}
-                                                                    </>
-                                                                ):(
-                                                                    selectedSubscriptionPlan?.price
-                                                                )
+                                                                discountData?.finalPrice ?  discountData?.finalPrice : selectedSubscriptionPlan?.price
                                                             )  
                                                         }
                                                         <sub className='fs-12 subtitle-color'>/{t(capitalizeTranslated(subscriptionValidity))}</sub>
@@ -201,21 +202,21 @@ const CheckoutModal = ({visible, onClose, subscriptionPlans, selectedSubscriptio
                                             <Col span={24}>
                                                 <MyInput
                                                     label={t('Discount Code')}
-                                                    name='discountCode'
+                                                    name='code'
                                                     placeholder={t('Enter discount code if any')}
-                                                    onChange={() => setPromoStatus(null)}
+                                                    onChange={() => setDiscountStatus(null)}
                                                     suffix={
                                                         <Flex align='center' gap={2}>
-                                                            {verifyingPromotion && <Spin {...SmLoader} size="small" />}
+                                                            {verifyingDiscount && <Spin {...SmLoader} size="small" />}
 
-                                                            {promoStatus !== null && !verifyingPromotion && (
-                                                            promoStatus ? (
+                                                            {discountStatus !== null && !verifyingDiscount && (
+                                                            discountStatus ? (
                                                                 <Text className="text-green fs-12">{t("Valid")}</Text>
                                                             ) : (
                                                                 <Text className="text-red fs-12">{t("Invalid")}</Text>
                                                             )
                                                             )}
-                                                            <Tag onClick={checkPromoCode} className='cursor'>{t('Check')}</Tag>
+                                                            <Tag onClick={checkDiscountCode} className='cursor'>{t('Check')}</Tag>
                                                         </Flex>
                                                     }
                                                 />
