@@ -15,6 +15,7 @@ const PrivacyPage = () => {
     }, [refetch]);
     
     const privacy_content = data?.getPrivacyPolicy?.content
+    const normalizeHtml = html =>html.replace(/&nbsp;/g, ' ')
     return (
         <>
             <MainSection title={t('Terms')} heading={t('Privacy Policy')} desc= {t('Manage bookings, reduce no-shows, and engage clients — all from one powerful platform integrated with WhatsApp.')}/>
@@ -29,11 +30,13 @@ const PrivacyPage = () => {
                                         <Spin {...TableLoader} size='small' />
                                     </Flex>
                                     :
-                                    <div
-                                        dangerouslySetInnerHTML={{
-                                        __html: privacy_content,
-                                        }}
-                                    ></div>
+                                    <Flex vertical wrap>
+                                        <div
+                                            dangerouslySetInnerHTML={{
+                                            __html: normalizeHtml(privacy_content),
+                                            }}
+                                        ></div>
+                                    </Flex>
                                 }
                                 
                             </Card>

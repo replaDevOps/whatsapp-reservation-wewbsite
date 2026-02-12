@@ -45,8 +45,6 @@ body{
 .w-100{
   width: 100% !important;
 }
-
-/* font sizes   */
 .fs-10 {
   font-size: 10px !important;
 }
@@ -89,7 +87,6 @@ body{
   font-size: 20px !important;
 }
 
-/* font wieght  */
 .fw-normal {
   font-weight: normal !important;
 }
@@ -110,14 +107,12 @@ body{
   font-size: 58px !important;
   font-weight: 800 !important;
 }
-/* alignment  */
 .text-center {
   text-align: center !important;
 }
 .text-justify{
   text-align: justify !important;
 }
-/* colors  */
 .text-black{
   color: var(--black) !important;
 }
@@ -133,7 +128,6 @@ body{
 .subtitle-color{
   color: var(--text-color) !important;
 }
-/* bg colors  */
 .bg-transparent {
   background-color: transparent !important;
 }
@@ -155,7 +149,6 @@ body{
 .bg-pricing{
   background-color: var(--dark-green)
 }
-/* buttons  */
 .btn{
     padding: 12px 18px;
     border-radius: 8px;
@@ -167,7 +160,6 @@ body{
   background-color: var(--brand) !important;
   color: var(--white) !important;
 }
-/* margin  */
 .my-3{
   margin-top: 1.5rem !important;
   margin-bottom: 1.5rem !important;
@@ -208,7 +200,7 @@ body{
   .mb-2 {
     margin-bottom: 1rem !important;
   }
-/* padding  */
+
 .common-padding {
   padding: 60px 50px !important;
 }
@@ -224,10 +216,7 @@ body{
 .p-2 {
   padding: 1.5rem !important;
 }
-.nowrap{
-    white-space: nowrap !important;
-}
-/* border  */
+
 .border-0 {
   border: 0px !important;
 }
@@ -262,7 +251,7 @@ body{
   width: fit-content;
   border-radius: 12px;
 }
-/* homepage css  */
+
 .hero-section{
   padding: 130px 0px 0px 0px;
  background: linear-gradient(to bottom, #c6eced, #ebf6f7);
@@ -315,18 +304,12 @@ body{
   left: 10px;
   right: 10px;
   height: 2px;
-  /* thickness */
   background: linear-gradient(to right,
       rgba(255, 255, 255, 0) 0%,
-      /* transparent left */
       rgba(255, 255, 0, 0.2) 25%,
-      /* light yellow fade in */
       rgb(255 204 23 / 97%) 50%,
-      /* solid yellow center */
       rgba(255, 255, 0, 0.2) 75%,
-      /* light yellow fade out */
       rgba(255, 255, 255, 0) 100%
-      /* transparent right */
     );
 
 }
@@ -365,7 +348,6 @@ body{
 .collapse-fq .panel{
     border: 1px solid var(--border-grey) !important;
     padding: 12px;
-    /* background-color: var(--white) !important; */
     margin-bottom: 10px;
     border-radius: 12px !important;
 }
@@ -399,13 +381,11 @@ body{
 }
 }
 
-/* login css  */
 .login-left-side {
   background: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  /* margin-top: 50px; */
   padding: 20px;
 }
 
@@ -426,7 +406,6 @@ body{
 
 .login-right-side{
   background: linear-gradient(to bottom, #c4eded 0%, var(--white) 100%);
-    /* background-image: url('../assets/images/login-sh.svg'); */
     min-height: 100vh;
     height: -webkit-fill-available;
     position: relative;
@@ -595,8 +574,4 @@ body{
 
 .ql-align-right{
   text-align: right;
-}
-
-.quill-content {
-  white-space: normal;
 }

@@ -15,6 +15,7 @@ const TermsPage = () => {
     }, [refetch]);
 
     const terms = data?.getTermsCondition?.content
+    const normalizeHtml = html =>html.replace(/&nbsp;/g, ' ')
     return (
         <>
             <MainSection title={t('Terms')} heading={t('Terms of Use')} desc= {t('Manage bookings, reduce no-shows, and engage clients — all from one powerful platform integrated with WhatsApp.')}/>
@@ -29,11 +30,7 @@ const TermsPage = () => {
                                         <Spin {...TableLoader} size='small' />
                                     </Flex>
                                     :
-                                    <div
-                                        dangerouslySetInnerHTML={{
-                                        __html: terms,
-                                        }}
-                                    ></div>
+                                    <div dangerouslySetInnerHTML={{ __html: normalizeHtml(terms) }} />
                                 }
                             </Card>
                         </Col>
