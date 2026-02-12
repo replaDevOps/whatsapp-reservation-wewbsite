@@ -46,21 +46,9 @@ const SubscriptionPlanRectangularCard= ({plan, selectedSubscriptionPlan, setSele
                     <sup className="fs-12">{t('SAR')}</sup>
                     {
                         subscriptionValidity === 'YEARLY' ? (
-                            (plan?.discountYearlyPrice > 0) && (plan?.discountYearlyPrice !== plan?.yearlyPrice) ? (
-                                <>
-                                    <Text className="fs-16 hover-gray" delete>{plan?.yearlyPrice}</Text> {plan?.discountYearlyPrice}
-                                </>
-                            ) : (
-                                plan?.yearlyPrice
-                            )
+                            plan?.yearlyPrice
                         ) : (
-                            (plan?.discountPrice > 0) && (!plan?.discountPrice !== plan?.price) ? (
-                                <>
-                                    <Text className="fs-16 hover-gray" delete>{plan?.price}</Text> {plan?.discountPrice}
-                                </>
-                            ):(
-                                plan?.price
-                            )
+                             plan?.price
                         )  
                     }
                     <sub className='fs-16'>/{t(capitalizeTranslated(subscriptionValidity))}</sub>

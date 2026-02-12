@@ -81,21 +81,9 @@ const ChangePlan = ({subscriptionPlans, selectedSubscriptionPlan, setSelectedSub
                   <sup className='fs-16'>{t('SAR')}</sup>
                   {
                     subscriptionValidity === 'YEARLY' ? (
-                        (selectedSubscriptionPlan?.discountYearlyPrice > 0) && (selectedSubscriptionPlan?.discountYearlyPrice !== selectedSubscriptionPlan?.yearlyPrice) ? (
-                            <>
-                                <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.yearlyPrice}</Text> {selectedSubscriptionPlan?.discountYearlyPrice}
-                            </>
-                        ) : (
-                            selectedSubscriptionPlan?.yearlyPrice
-                        )
+                        selectedSubscriptionPlan?.yearlyPrice
                     ) : (
-                        (selectedSubscriptionPlan?.discountPrice > 0) && (!selectedSubscriptionPlan?.discountPrice !== selectedSubscriptionPlan?.price) ? (
-                            <>
-                                <Text className="fs-16 hover-gray" delete>{selectedSubscriptionPlan?.price}</Text> {selectedSubscriptionPlan?.discountPrice}
-                            </>
-                        ):(
-                            selectedSubscriptionPlan?.price
-                        )
+                        selectedSubscriptionPlan?.price
                     )  
                   }
                   {/* {subscriptionValidity === 'YEARLY' ? selectedSubscriptionPlan?.price*12 : selectedSubscriptionPlan?.price} */}

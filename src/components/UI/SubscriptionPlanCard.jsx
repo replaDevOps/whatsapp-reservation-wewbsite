@@ -53,21 +53,23 @@ const SubscriptionPlanCard= ({subscriptionPlan, setSelectedSubscriptionPlan, sub
                     <sup className={`fs-16`}>{t("SAR")}</sup>
                     {
                         subscriptionValidity === 'YEARLY' ? (
-                            (subscriptionPlan?.discountYearlyPrice > 0) && (subscriptionPlan?.discountYearlyPrice !== subscriptionPlan?.yearlyPrice) ? (
-                                <>
-                                    <Text className="fs-16 hover-gray" delete>{subscriptionPlan?.yearlyPrice}</Text> {subscriptionPlan?.discountYearlyPrice}
-                                </>
-                            ) : (
-                                subscriptionPlan?.yearlyPrice
-                            )
+                            // (subscriptionPlan?.discountYearlyPrice > 0) && (subscriptionPlan?.discountYearlyPrice !== subscriptionPlan?.yearlyPrice) ? (
+                            //     <>
+                            //         <Text className="fs-16 hover-gray" delete>{subscriptionPlan?.yearlyPrice}</Text> {subscriptionPlan?.discountYearlyPrice}
+                            //     </>
+                            // ) : (
+                                
+                            // )
+                            subscriptionPlan?.type === 'ENTERPRISE' ? subscriptionPlan?.yearlyPrice > 0 ? subscriptionPlan?.yearlyPrice : '0' : subscriptionPlan?.yearlyPrice
                         ) : (
-                            (subscriptionPlan?.discountPrice > 0) && (subscriptionPlan?.discountPrice !== subscriptionPlan?.price) ? (
-                                <>
-                                    <Text className="fs-16 hover-gray" delete>{subscriptionPlan?.price}</Text> {subscriptionPlan?.discountPrice}
-                                </>
-                            ):(
-                                subscriptionPlan?.price
-                            )
+                            // (subscriptionPlan?.discountPrice > 0) && (subscriptionPlan?.discountPrice !== subscriptionPlan?.price) ? (
+                            //     <>
+                            //         <Text className="fs-16 hover-gray" delete>{subscriptionPlan?.price}</Text> {subscriptionPlan?.discountPrice}
+                            //     </>
+                            // ):(
+                                
+                            // )
+                            subscriptionPlan?.price
                         )  
                     }
                     <sub className="fs-16">/{capitalizeTranslated(subscriptionValidity)}</sub>
